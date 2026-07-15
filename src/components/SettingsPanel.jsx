@@ -102,6 +102,12 @@ export default function SettingsPanel({ open, onClose }) {
           checked={s.captions}
           onChange={(v) => set({ captions: v })}
         />
+        <Toggle
+          label="Reduce motion"
+          hint="Minimize animations and transitions"
+          checked={s.reducedMotion}
+          onChange={(v) => set({ reducedMotion: v })}
+        />
 
         <div className="text-size-row">
           <span className="toggle-label">Text size</span>

@@ -30,6 +30,7 @@ const defaultSettings = {
   contrast: false,
   colorblind: false,
   captions: true,
+  reducedMotion: false,
 }
 
 const initialState = {

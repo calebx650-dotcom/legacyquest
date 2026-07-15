@@ -59,45 +59,65 @@ export default function Museum() {
         </div>
       </section>
 
-      <div className="grid grid-museum">
-        {ALL.map((c) => {
-          const has = owned.has(c.id)
-          const rar = RARITY[c.rarity] || RARITY.common
-          return (
-            <article
-              key={c.id}
-              className={`relic ${has ? 'has' : 'ghost'} rarity-${c.rarity}`}
-              style={{ '--rarity': rar.color }}
-              onClick={() => has && setOpenId(c.id)}
-              role={has ? 'button' : undefined}
-            >
-              <div className="relic-icon" aria-hidden>
-                {has ? c.icon : '❔'}
-              </div>
-              <span className="relic-rarity" style={{ color: rar.color }}>
-                {rar.label}
+      {RARITY_ORDER.map((rarity) => {
+        const hall = ALL.filter((c) => c.rarity === rarity)
+        if (hall.length === 0) return null
+        const rar = RARITY[rarity]
+        const hallNames = {
+          legendary: 'Legendary Hall',
+          rare: 'Rare Wing',
+          common: 'Main Gallery',
+        }
+        const have = hall.filter((c) => owned.has(c.id)).length
+        return (
+          <section key={rarity} className="museum-hall" style={{ '--hall': rar.color }}>
+            <div className="hall-label">
+              <h3>{hallNames[rarity]}</h3>
+              <span className="hall-count">
+                {have} of {hall.length} on display
               </span>
-              {has ? (
-                <>
-                  <span className="relic-cat">{c.category}</span>
-                  <h3>{c.name}</h3>
-                  <p>{c.blurb}</p>
-                  <span className="relic-examine">Tap to examine →</span>
-                </>
-              ) : (
-                <>
-                  <span className="relic-cat">Undiscovered</span>
-                  <h3>Lost to the Eraser</h3>
-                  <p className="muted">
-                    Solve mysteries, clear puzzles, and keep your Daily streak to recover this
-                    artifact.
-                  </p>
-                </>
-              )}
-            </article>
-          )
-        })}
-      </div>
+            </div>
+            <div className="grid grid-museum">
+              {hall.map((c) => {
+                const has = owned.has(c.id)
+                return (
+                  <article
+                    key={c.id}
+                    className={`relic ${has ? 'has' : 'ghost'} rarity-${c.rarity}`}
+                    style={{ '--rarity': rar.color }}
+                    onClick={() => has && setOpenId(c.id)}
+                    role={has ? 'button' : undefined}
+                  >
+                    <div className="relic-icon" aria-hidden>
+                      {has ? c.icon : '❔'}
+                    </div>
+                    <span className="relic-rarity" style={{ color: rar.color }}>
+                      {rar.label}
+                    </span>
+                    {has ? (
+                      <>
+                        <span className="relic-cat">{c.category}</span>
+                        <h3>{c.name}</h3>
+                        <p>{c.blurb}</p>
+                        <span className="relic-examine">Tap to examine →</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="relic-cat">Undiscovered</span>
+                        <h3>Lost to the Eraser</h3>
+                        <p className="muted">
+                          Solve mysteries, clear puzzles, and keep your Daily streak to recover
+                          this artifact.
+                        </p>
+                      </>
+                    )}
+                  </article>
+                )
+              })}
+            </div>
+          </section>
+        )
+      })}
 
       <div className="danger-zone">
         <button

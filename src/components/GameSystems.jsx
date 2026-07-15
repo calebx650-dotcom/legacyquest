@@ -84,6 +84,7 @@ export default function GameSystems() {
     root.dataset.dyslexia = s.dyslexia ? 'on' : 'off'
     root.dataset.contrast = s.contrast ? 'on' : 'off'
     root.dataset.colorblind = s.colorblind ? 'on' : 'off'
+    root.dataset.motion = s.reducedMotion ? 'reduced' : 'full'
     root.style.setProperty('--text-scale', String(s.textScale))
   }, [state.settings])
 

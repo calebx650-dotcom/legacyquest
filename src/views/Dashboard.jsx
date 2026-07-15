@@ -1,15 +1,18 @@
 import { Link } from 'react-router-dom'
 import { useGame } from '../state/GameContext.jsx'
-import { PageHeader, Reward } from '../components/ui.jsx'
+import { Reward } from '../components/ui.jsx'
 import Speak from '../components/Speak.jsx'
 import { audio } from '../audio/engine.js'
-import { allEras } from '../content/store.js'
+import { allEras, allCollectibles } from '../content/store.js'
 import { MYSTERIES } from '../data/mysteries.js'
 import { PUZZLES } from '../data/puzzles.js'
 import { MENTORS } from '../data/mentors.js'
 import { COMMUNITY } from '../data/community.js'
+import { RARITY } from '../data/collectibles.js'
+import { TITLES } from '../data/titles.js'
 import { featuredForDate, featuredId } from '../data/thisday.js'
 import { activeEvents } from '../data/events.js'
+import { getLevelInfo } from '../game/selectors.js'
 
 export default function Dashboard() {
   const { state, dispatch } = useGame()
@@ -26,52 +29,40 @@ export default function Dashboard() {
   const dailyDone = state.daily.lastCompleted === todayStr
   const streak = state.daily.streak || 0
 
+  const lvl = getLevelInfo(state)
+  const title = TITLES.find((t) => t.id === state.activeTitle)?.name ?? 'Legacy Keeper'
+  const keeperName = state.account.signedIn ? state.account.name : 'Legacy Keeper'
+
+  // Featured artifact of the day — deterministic daily pick from the catalog.
+  const catalog = Object.values(allCollectibles())
+  const dayIdx = Math.floor(now.getTime() / 86_400_000)
+  const artifactOfDay = catalog[dayIdx % catalog.length]
+  const ownsFeatured = state.collectibles.includes(artifactOfDay.id)
+  const artRarity = RARITY[artifactOfDay.rarity] || RARITY.common
+
   function claimThisDay() {
     if (claimedToday) return
     audio.play('unlock')
     dispatch({ type: 'CLAIM_THIS_DAY', id: fid })
   }
 
+  const eras = allEras()
   const progress = [
-    { label: 'Eras restored', done: state.unlockedEras.length, total: allEras().length, to: '/eras' },
-    {
-      label: 'Mysteries solved',
-      done: state.solvedMysteries.length,
-      total: MYSTERIES.length,
-      to: '/mysteries',
-    },
-    {
-      label: 'Puzzles cleared',
-      done: state.solvedPuzzles.length,
-      total: PUZZLES.length,
-      to: '/puzzles',
-    },
-    {
-      label: 'Mentors recruited',
-      done: state.unlockedMentors.length,
-      total: MENTORS.length,
-      to: '/mentors',
-    },
-    {
-      label: 'Greenwood rebuilt',
-      done: state.builtBuildings.length,
-      total: COMMUNITY.buildings.length,
-      to: '/community',
-    },
+    { label: 'Eras restored', done: state.unlockedEras.length, total: eras.length, to: '/eras' },
+    { label: 'Mysteries solved', done: state.solvedMysteries.length, total: MYSTERIES.length, to: '/mysteries' },
+    { label: 'Puzzles cleared', done: state.solvedPuzzles.length, total: PUZZLES.length, to: '/puzzles' },
+    { label: 'Mentors recruited', done: state.unlockedMentors.length, total: MENTORS.length, to: '/mentors' },
+    { label: 'Greenwood rebuilt', done: state.builtBuildings.length, total: COMMUNITY.buildings.length, to: '/community' },
   ]
 
-  // Suggest the next thing to do.
   const nextMystery = MYSTERIES.find((m) => !state.solvedMysteries.includes(m.id))
   const nextPuzzle = PUZZLES.find((p) => !state.solvedPuzzles.includes(p.id))
 
+  // Timeline strip is doubled so the drift animation loops seamlessly.
+  const timelineItems = [...eras, ...eras]
+
   return (
     <div className="view">
-      <PageHeader
-        icon="🏛️"
-        title="Keeper’s Hall"
-        subtitle="The Eraser is unmaking Black history. As a Legacy Keeper, restore it — one story at a time."
-      />
-
       {events.length > 0 && (
         <div className="event-banner">
           <span className="event-banner-icon">{events[0].icon}</span>
@@ -97,6 +88,97 @@ export default function Dashboard() {
         </div>
       )}
 
+      <section className="hq-hero">
+        <div className="hq-hero-main">
+          <span className="hq-hero-kicker">Keeper’s Hall</span>
+          <h1>
+            The timeline is fading, <em>{keeperName.split(' ')[0]}</em>.
+          </h1>
+          <p className="hq-hero-sub">
+            The Eraser is unmaking Black history — figures, inventions, and speeches vanishing from
+            the record. Travel the eras, solve what it left behind, and restore every memory to
+            your Legacy Museum. Every mission is built from verified history.
+          </p>
+          <div className="hero-actions">
+            <Link className="btn btn-primary" to="/daily">
+              Today’s Daily Legacy →
+            </Link>
+            {nextMystery && (
+              <Link className="btn" to="/mysteries">
+                Investigate: {nextMystery.title}
+              </Link>
+            )}
+          </div>
+        </div>
+
+        <aside className="profile-card">
+          <div className="profile-top">
+            <div className="profile-avatar" aria-hidden>
+              {keeperName.charAt(0)}
+            </div>
+            <div>
+              <div className="profile-name">{keeperName}</div>
+              <div className="profile-title">{title}</div>
+            </div>
+          </div>
+          <div className="profile-level-row">
+            <span className="profile-level">Lv {lvl.level}</span>
+            <div className="xp-bar">
+              <div className="xp-fill" style={{ width: `${lvl.pct}%` }} />
+            </div>
+          </div>
+          <p className="profile-xp-note">
+            {lvl.into}/{lvl.span} XP to Level {lvl.level + 1}
+          </p>
+          <div className="profile-stats">
+            <div className="profile-stat">
+              <strong>{state.legacyPoints}</strong>
+              <span>Points</span>
+            </div>
+            <div className="profile-stat">
+              <strong>{streak}</strong>
+              <span>Streak</span>
+            </div>
+            <div className="profile-stat">
+              <strong>{state.collectibles.length}</strong>
+              <span>Artifacts</span>
+            </div>
+          </div>
+        </aside>
+
+        <div className="hq-timeline" aria-hidden>
+          <div className="hq-timeline-track">
+            {timelineItems.map((e, i) => (
+              <span key={`${e.id}-${i}`} className="hq-tl-item" style={{ '--dot': e.accent }}>
+                <i />
+                {e.years} · {e.name}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section
+        className="featured-artifact"
+        style={{ '--rarity': artRarity.color }}
+      >
+        <div className="featured-artifact-icon" aria-hidden>
+          {ownsFeatured ? artifactOfDay.icon : '❔'}
+        </div>
+        <div>
+          <span className="kicker">Featured artifact of the day</span>
+          <h3>{ownsFeatured ? artifactOfDay.name : 'Still lost to the Eraser'}</h3>
+          <p>
+            {ownsFeatured
+              ? artifactOfDay.blurb
+              : `A ${artRarity.label.toLowerCase()} ${artifactOfDay.category.toLowerCase()} awaits recovery. Solve mysteries, clear puzzles, and keep your streak to bring it home.`}
+          </p>
+        </div>
+        <Link className="btn btn-sm" to="/museum" style={{ marginLeft: 'auto', flexShrink: 0 }}>
+          Visit museum
+        </Link>
+      </section>
+
       <section className="thisday-card">
         <div className="thisday-head">
           <span className="kicker">
@@ -115,27 +197,6 @@ export default function Dashboard() {
             Explore &amp; claim bonus (+10 pts, +15 XP)
           </button>
         )}
-      </section>
-
-      <section className="hero-card">
-        <div className="hero-body">
-          <h2>The timeline is fading.</h2>
-          <p>
-            Figures, inventions, and speeches are vanishing. Travel through the eras, solve the
-            mysteries the Eraser left behind, and recover every artifact for your Legacy Museum.
-            Every mission is built from verified history.
-          </p>
-          <div className="hero-actions">
-            <Link className="btn btn-primary" to="/daily">
-              Today’s Daily Legacy →
-            </Link>
-            {nextMystery && (
-              <Link className="btn" to="/mysteries">
-                Investigate: {nextMystery.title}
-              </Link>
-            )}
-          </div>
-        </div>
       </section>
 
       <h3 className="section-label">Your progress</h3>
