@@ -17,6 +17,17 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   </React.StrictMode>,
 )
 
+// Fade out the launch splash once React has painted its first frame.
+requestAnimationFrame(() => {
+  requestAnimationFrame(() => {
+    const splash = document.getElementById('splash')
+    if (splash) {
+      splash.classList.add('is-done')
+      setTimeout(() => splash.remove(), 600)
+    }
+  })
+})
+
 // Register the service worker for offline play (production only, so it doesn't
 // interfere with the dev server's hot reload).
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {

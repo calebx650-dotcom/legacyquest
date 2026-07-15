@@ -8,26 +8,51 @@ import { MENTORS } from '../data/mentors.js'
 import { tipFor } from '../data/companions.js'
 import SettingsPanel from './SettingsPanel.jsx'
 
-const NAV = [
-  { to: '/', label: 'Keeper’s Hall', icon: '🏛️', end: true },
-  { to: '/daily', label: 'Daily Legacy', icon: '📅' },
-  { to: '/quests', label: 'Quests', icon: '🎯' },
-  { to: '/events', label: 'Events', icon: '🎁' },
-  { to: '/eras', label: 'Eras', icon: '🧭' },
-  { to: '/mysteries', label: 'History Mysteries', icon: '🕵️' },
-  { to: '/stories', label: 'Narrated Stories', icon: '📖' },
-  { to: '/puzzles', label: 'Puzzle Lab', icon: '🧩' },
-  { to: '/mentors', label: 'Mentors', icon: '⚔️' },
-  { to: '/community', label: 'Community Builder', icon: '🏙️' },
-  { to: '/culture', label: 'Culture Journey', icon: '🎵' },
-  { to: '/museum', label: 'Legacy Museum', icon: '🖼️' },
-  { to: '/progress', label: 'Progression', icon: '🏅' },
-  { to: '/leaderboards', label: 'Leaderboards', icon: '🏆' },
-  { to: '/teacher', label: 'Teacher Mode', icon: '🎓' },
-  { to: '/analytics', label: 'Analytics', icon: '📊' },
-  { to: '/studio', label: 'Content Studio', icon: '🛠️' },
-  { to: '/offline', label: 'Offline & Packs', icon: '📥' },
-  { to: '/account', label: 'Account', icon: '👤' },
+const NAV_GROUPS = [
+  {
+    label: 'Play',
+    items: [
+      { to: '/', label: 'Keeper’s Hall', icon: '🏛️', end: true },
+      { to: '/daily', label: 'Daily Legacy', icon: '📅' },
+      { to: '/quests', label: 'Quests', icon: '🎯' },
+      { to: '/events', label: 'Events', icon: '🎁' },
+    ],
+  },
+  {
+    label: 'Explore',
+    items: [
+      { to: '/eras', label: 'Eras', icon: '🧭' },
+      { to: '/mysteries', label: 'History Mysteries', icon: '🕵️' },
+      { to: '/stories', label: 'Narrated Stories', icon: '📖' },
+      { to: '/puzzles', label: 'Puzzle Lab', icon: '🧩' },
+      { to: '/culture', label: 'Culture Journey', icon: '🎵' },
+    ],
+  },
+  {
+    label: 'Build',
+    items: [
+      { to: '/mentors', label: 'Mentors', icon: '⚔️' },
+      { to: '/community', label: 'Community Builder', icon: '🏙️' },
+      { to: '/museum', label: 'Legacy Museum', icon: '🖼️' },
+    ],
+  },
+  {
+    label: 'Progress',
+    items: [
+      { to: '/progress', label: 'Progression', icon: '🏅' },
+      { to: '/leaderboards', label: 'Leaderboards', icon: '🏆' },
+    ],
+  },
+  {
+    label: 'Classroom & tools',
+    items: [
+      { to: '/teacher', label: 'Teacher Mode', icon: '🎓' },
+      { to: '/analytics', label: 'Analytics', icon: '📊' },
+      { to: '/studio', label: 'Content Studio', icon: '🛠️' },
+      { to: '/offline', label: 'Offline & Packs', icon: '📥' },
+      { to: '/account', label: 'Account', icon: '👤' },
+    ],
+  },
 ]
 
 export default function Layout({ children }) {
@@ -59,24 +84,30 @@ export default function Layout({ children }) {
           </div>
         </div>
         <nav className="nav">
-          {NAV.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.end}
-              className={({ isActive }) => `nav-link ${isActive ? 'is-active' : ''}`}
-              onClick={() => setOpen(false)}
-            >
-              <span className="nav-icon" aria-hidden>
-                {item.icon}
-              </span>
-              <span>{item.label}</span>
-            </NavLink>
+          {NAV_GROUPS.map((group) => (
+            <div key={group.label} className="nav-group">
+              <div className="nav-group-label">{group.label}</div>
+              {group.items.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={item.end}
+                  className={({ isActive }) => `nav-link ${isActive ? 'is-active' : ''}`}
+                  onClick={() => setOpen(false)}
+                >
+                  <span className="nav-icon" aria-hidden>
+                    {item.icon}
+                  </span>
+                  <span>{item.label}</span>
+                </NavLink>
+              ))}
+            </div>
           ))}
         </nav>
         <div className="sidebar-foot">
           <div className="keeper-title">{title}</div>
           Legacy Keeper #{1000 + state.collectibles.length}
+          <div className="app-version">LegacyQuest 1.0 · history verified</div>
         </div>
       </aside>
 

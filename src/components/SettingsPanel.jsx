@@ -130,6 +130,33 @@ export default function SettingsPanel({ open, onClose }) {
             ))}
           </div>
         </div>
+
+        <h3 className="drawer-label">Save data</h3>
+        <p className="drawer-note">
+          Your progress is saved on this device. Move it between devices from the Account screen.
+        </p>
+        <button
+          className="btn btn-ghost"
+          style={{ marginTop: 10 }}
+          onClick={() => {
+            if (window.confirm('Reset all progress? This clears your saved game and onboarding.')) {
+              dispatch({ type: 'RESET' })
+              onClose()
+            }
+          }}
+        >
+          Reset all progress
+        </button>
+
+        <h3 className="drawer-label">About</h3>
+        <div className="about-block">
+          <div className="about-name">🔥 LegacyQuest</div>
+          <div className="about-version">Version 1.0 · playable prototype</div>
+          <p>
+            Don’t just learn Black history — live it. The framing story is fiction; every name,
+            date, and event is drawn from the verified historical record.
+          </p>
+        </div>
       </aside>
     </div>
   )

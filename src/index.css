@@ -3413,3 +3413,85 @@ button:focus:not(:focus-visible) {
     font-size: 26px;
   }
 }
+
+/* ============================================================
+   CREATIVE DIRECTOR PASS — prototype → product chrome.
+   ============================================================ */
+
+/* Grouped navigation */
+.nav {
+  gap: 2px;
+}
+.nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+.nav-group-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0 12px 6px;
+}
+
+/* App version footer */
+.app-version {
+  margin-top: 6px;
+  font-size: 10.5px;
+  letter-spacing: 0.4px;
+  color: var(--muted);
+  opacity: 0.8;
+}
+
+/* Preview chips replace prototype "demo data" boxes */
+.demo-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba(74, 125, 214, 0.08);
+  border: 1px solid rgba(74, 125, 214, 0.3);
+  border-radius: 12px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.demo-note::before {
+  content: 'PREVIEW';
+  flex-shrink: 0;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+  color: var(--blue);
+  border: 1px solid rgba(74, 125, 214, 0.5);
+  border-radius: 6px;
+  padding: 2px 7px;
+  margin-top: 1px;
+}
+
+/* About block in settings */
+.about-block {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px;
+  background: var(--panel-2);
+}
+.about-name {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 17px;
+}
+.about-version {
+  font-size: 11.5px;
+  color: var(--gold);
+  letter-spacing: 0.8px;
+  margin: 3px 0 8px;
+}
+.about-block p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}

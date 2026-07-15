@@ -5,7 +5,7 @@ import { RARITY, RARITY_ORDER } from '../data/collectibles.js'
 import { allCollectibles, allEras } from '../content/store.js'
 
 export default function Museum() {
-  const { state, dispatch } = useGame()
+  const { state } = useGame()
   const owned = new Set(state.collectibles)
   const [openId, setOpenId] = useState(null)
 
@@ -118,19 +118,6 @@ export default function Museum() {
           </section>
         )
       })}
-
-      <div className="danger-zone">
-        <button
-          className="btn btn-ghost"
-          onClick={() => {
-            if (window.confirm('Reset all progress? This clears your saved game and onboarding.')) {
-              dispatch({ type: 'RESET' })
-            }
-          }}
-        >
-          Reset progress
-        </button>
-      </div>
 
       {openId && (
         <ArtifactModal
