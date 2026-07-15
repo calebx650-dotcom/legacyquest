@@ -1,9 +1,12 @@
 import { useState } from 'react'
 import { useGame } from '../state/GameContext.jsx'
 import { PageHeader, Pill, Reward, EmptyNote } from '../components/ui.jsx'
+import Speak from '../components/Speak.jsx'
+import { audio } from '../audio/engine.js'
 import { MYSTERIES } from '../data/mysteries.js'
 import { ERAS } from '../data/eras.js'
 import { COLLECTIBLES } from '../data/collectibles.js'
+import { DIFFICULTIES } from '../game/progression.js'
 
 const eraName = (id) => ERAS.find((e) => e.id === id)?.name ?? id
 
@@ -73,17 +76,33 @@ export default function Mysteries() {
 function MysteryModal({ mystery, onClose }) {
   const { state, dispatch } = useGame()
   const alreadySolved = state.solvedMysteries.includes(mystery.id)
-  const [revealed, setRevealed] = useState(alreadySolved ? mystery.clues.length : 0)
+  // Difficulty controls how many clues are revealed for free.
+  const ratio = DIFFICULTIES[state.difficulty]?.freeCluesRatio ?? 0.5
+  const freeClues = Math.round(mystery.clues.length * ratio)
+  const [revealed, setRevealed] = useState(
+    alreadySolved ? mystery.clues.length : freeClues,
+  )
   const [picked, setPicked] = useState(null)
 
   const solvedNow = picked === mystery.answerId
   const showAnswer = alreadySolved || solvedNow
   const reward = mystery.unlocks ? COLLECTIBLES[mystery.unlocks] : null
 
+  function revealNext() {
+    audio.play('click')
+    dispatch({ type: 'COLLECT_CLUE' })
+    setRevealed((r) => r + 1)
+  }
+
   function choose(id) {
     if (alreadySolved || picked) return
     setPicked(id)
-    if (id === mystery.answerId) dispatch({ type: 'SOLVE_MYSTERY', id: mystery.id })
+    if (id === mystery.answerId) {
+      audio.play('solve')
+      dispatch({ type: 'SOLVE_MYSTERY', id: mystery.id })
+    } else {
+      audio.play('wrong')
+    }
   }
 
   return (
@@ -93,7 +112,10 @@ function MysteryModal({ mystery, onClose }) {
           ✕
         </button>
         <h2>{mystery.title}</h2>
-        <p className="case-brief">{mystery.brief}</p>
+        <p className="case-brief">
+          {mystery.brief}
+          <Speak text={`${mystery.title}. ${mystery.brief}`} />
+        </p>
 
         <h4 className="block-label">🔎 Evidence</h4>
         <ol className="clue-list">
@@ -104,7 +126,7 @@ function MysteryModal({ mystery, onClose }) {
           ))}
         </ol>
         {revealed < mystery.clues.length && (
-          <button className="btn" onClick={() => setRevealed((r) => r + 1)}>
+          <button className="btn" onClick={revealNext}>
             Collect next clue ({revealed}/{mystery.clues.length})
           </button>
         )}

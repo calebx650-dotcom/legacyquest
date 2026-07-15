@@ -1,5 +1,6 @@
 import { useGame } from '../state/GameContext.jsx'
 import { PageHeader, Pill } from '../components/ui.jsx'
+import { audio } from '../audio/engine.js'
 import { COMMUNITY } from '../data/community.js'
 
 // Madam C. J. Walker's "Enterprise" ability discounts construction by 15%.
@@ -69,7 +70,10 @@ export default function Community() {
                   <button
                     className="btn btn-primary"
                     disabled={!affordable}
-                    onClick={() => dispatch({ type: 'BUILD', id: b.id, cost })}
+                    onClick={() => {
+                      audio.play('unlock')
+                      dispatch({ type: 'BUILD', id: b.id, cost })
+                    }}
                   >
                     {affordable
                       ? `Build (−${cost} pts)`

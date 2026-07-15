@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useGame } from '../state/GameContext.jsx'
 import { PageHeader, Pill, Reward } from '../components/ui.jsx'
+import { audio } from '../audio/engine.js'
 import { PUZZLES } from '../data/puzzles.js'
 
 // Fisher–Yates shuffle (returns a new array).
@@ -58,7 +59,10 @@ export default function PuzzleLab() {
 function useSolve(puzzle) {
   const { state, dispatch } = useGame()
   const solved = state.solvedPuzzles.includes(puzzle.id)
-  const solve = () => dispatch({ type: 'SOLVE_PUZZLE', id: puzzle.id })
+  const solve = () => {
+    audio.play('solve')
+    dispatch({ type: 'SOLVE_PUZZLE', id: puzzle.id })
+  }
   return { solved, solve }
 }
 

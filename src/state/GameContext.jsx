@@ -4,12 +4,40 @@ import { MYSTERIES } from '../data/mysteries.js'
 import { PUZZLES } from '../data/puzzles.js'
 import { COMMUNITY } from '../data/community.js'
 import { STREAK_REWARDS } from '../data/collectibles.js'
+import { ONBOARDING } from '../data/onboarding.js'
+import { ALL_QUESTS, dayKey, weekKey } from '../data/quests.js'
+import { DIFFICULTIES, DEFAULT_DIFFICULTY } from '../game/progression.js'
 
-const STORAGE_KEY = 'legacyquest.save.v1'
+const STORAGE_KEY = 'legacyquest.save.v2'
 
-// The first era is always available so a new player can start immediately.
+const emptyCounters = () => ({
+  dayKey: dayKey(),
+  weekKey: weekKey(),
+  day: { dailyDone: 0, puzzles: 0, clues: 0 },
+  week: { mysteries: 0, buildings: 0, xp: 0, puzzles: 0 },
+  claimedDaily: [],
+  claimedWeekly: [],
+})
+
+const defaultSettings = {
+  music: false,
+  sfx: true,
+  tts: false,
+  dyslexia: false,
+  textScale: 1,
+  contrast: false,
+  colorblind: false,
+  captions: true,
+}
+
 const initialState = {
   legacyPoints: 0,
+  xp: 0,
+  onboarded: false,
+  difficulty: DEFAULT_DIFFICULTY,
+  settings: defaultSettings,
+  activeTitle: 'novice-keeper',
+  achievements: [],
   unlockedEras: ['reconstruction'],
   unlockedMentors: [],
   solvedMysteries: [],
@@ -18,38 +46,136 @@ const initialState = {
   visitedCulture: [],
   collectibles: [],
   daily: { lastCompleted: null, streak: 0 },
+  thisDayClaimed: null,
+  counters: emptyCounters(),
 }
 
 function load() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return initialState
-    // Merge so new fields added in later versions don't break old saves.
-    return { ...initialState, ...JSON.parse(raw) }
+    const saved = JSON.parse(raw)
+    return {
+      ...initialState,
+      ...saved,
+      settings: { ...defaultSettings, ...(saved.settings || {}) },
+      counters: rollover(saved.counters || emptyCounters()),
+    }
   } catch {
     return initialState
   }
 }
 
-// Add a value to an array only if it's not already present (idempotent unlocks).
 const addUnique = (arr, value) => (arr.includes(value) ? arr : [...arr, value])
+const xpMult = (state) => DIFFICULTIES[state.difficulty]?.xpMult ?? 1
+
+// Reset daily/weekly counters when the calendar day or week has changed.
+function rollover(counters) {
+  const c = { ...emptyCounters(), ...counters }
+  const dk = dayKey()
+  const wk = weekKey()
+  let next = c
+  if (c.dayKey !== dk) {
+    next = { ...next, dayKey: dk, day: emptyCounters().day, claimedDaily: [] }
+  }
+  if (c.weekKey !== wk) {
+    next = { ...next, weekKey: wk, week: emptyCounters().week, claimedWeekly: [] }
+  }
+  return next
+}
+
+// Add XP (scaled by difficulty) and mirror it into the weekly XP counter.
+function addXp(state, baseXp) {
+  const gain = Math.round(baseXp * xpMult(state))
+  const counters = rollover(state.counters)
+  return {
+    xp: state.xp + gain,
+    counters: { ...counters, week: { ...counters.week, xp: counters.week.xp + gain } },
+  }
+}
 
 function reducer(state, action) {
   switch (action.type) {
+    case 'SYNC_PERIOD':
+      return { ...state, counters: rollover(state.counters) }
+
     case 'AWARD_POINTS':
       return { ...state, legacyPoints: state.legacyPoints + action.points }
 
     case 'COLLECT':
       return { ...state, collectibles: addUnique(state.collectibles, action.id) }
 
+    case 'SET_DIFFICULTY':
+      return { ...state, difficulty: action.id }
+
+    case 'UPDATE_SETTINGS':
+      return { ...state, settings: { ...state.settings, ...action.patch } }
+
+    case 'SET_TITLE':
+      return { ...state, activeTitle: action.id }
+
+    case 'UNLOCK_ACHIEVEMENT': {
+      if (state.achievements.includes(action.id)) return state
+      const { xp, counters } = addXp(state, 25)
+      return { ...state, achievements: addUnique(state.achievements, action.id), xp, counters }
+    }
+
+    case 'COMPLETE_ONBOARDING': {
+      if (state.onboarded) return state
+      const { xp, counters } = addXp(state, ONBOARDING.rewardXp)
+      return {
+        ...state,
+        onboarded: true,
+        legacyPoints: state.legacyPoints + ONBOARDING.rewardPoints,
+        collectibles: addUnique(state.collectibles, ONBOARDING.rewardArtifact),
+        xp,
+        counters,
+      }
+    }
+
+    case 'CLAIM_THIS_DAY': {
+      if (state.thisDayClaimed === action.id) return state
+      const { xp, counters } = addXp(state, 15)
+      return {
+        ...state,
+        thisDayClaimed: action.id,
+        legacyPoints: state.legacyPoints + 10,
+        xp,
+        counters,
+      }
+    }
+
+    case 'COLLECT_CLUE': {
+      const counters = rollover(state.counters)
+      return { ...state, counters: { ...counters, day: { ...counters.day, clues: counters.day.clues + 1 } } }
+    }
+
+    case 'CLAIM_QUEST': {
+      const quest = ALL_QUESTS.find((q) => q.id === action.id)
+      if (!quest) return state
+      const listKey = quest.scope === 'day' ? 'claimedDaily' : 'claimedWeekly'
+      const counters0 = rollover(state.counters)
+      if (counters0[listKey].includes(action.id)) return state
+      const { xp, counters } = addXp(state, quest.reward.xp)
+      return {
+        ...state,
+        legacyPoints: state.legacyPoints + quest.reward.points,
+        xp,
+        counters: { ...counters, [listKey]: addUnique(counters0[listKey], action.id) },
+      }
+    }
+
     case 'UNLOCK_ERA': {
       const era = ERAS.find((e) => e.id === action.id)
       if (!era || state.unlockedEras.includes(action.id)) return state
       if (state.legacyPoints < era.unlockCost) return state
+      const { xp, counters } = addXp(state, 15)
       return {
         ...state,
         legacyPoints: state.legacyPoints - era.unlockCost,
         unlockedEras: addUnique(state.unlockedEras, action.id),
+        xp,
+        counters,
       }
     }
 
@@ -57,10 +183,13 @@ function reducer(state, action) {
       const { mentor } = action
       if (state.unlockedMentors.includes(mentor.id)) return state
       if (state.legacyPoints < mentor.unlockCost) return state
+      const { xp, counters } = addXp(state, 20)
       return {
         ...state,
         legacyPoints: state.legacyPoints - mentor.unlockCost,
         unlockedMentors: addUnique(state.unlockedMentors, mentor.id),
+        xp,
+        counters,
       }
     }
 
@@ -68,6 +197,7 @@ function reducer(state, action) {
       if (state.solvedMysteries.includes(action.id)) return state
       const mystery = MYSTERIES.find((m) => m.id === action.id)
       if (!mystery) return state
+      const { xp, counters } = addXp(state, mystery.reward)
       return {
         ...state,
         legacyPoints: state.legacyPoints + mystery.reward,
@@ -75,6 +205,8 @@ function reducer(state, action) {
         collectibles: mystery.unlocks
           ? addUnique(state.collectibles, mystery.unlocks)
           : state.collectibles,
+        xp,
+        counters: { ...counters, week: { ...counters.week, mysteries: counters.week.mysteries + 1 } },
       }
     }
 
@@ -82,10 +214,17 @@ function reducer(state, action) {
       if (state.solvedPuzzles.includes(action.id)) return state
       const puzzle = PUZZLES.find((p) => p.id === action.id)
       if (!puzzle) return state
+      const { xp, counters } = addXp(state, puzzle.reward)
       return {
         ...state,
         legacyPoints: state.legacyPoints + puzzle.reward,
         solvedPuzzles: addUnique(state.solvedPuzzles, action.id),
+        xp,
+        counters: {
+          ...counters,
+          day: { ...counters.day, puzzles: counters.day.puzzles + 1 },
+          week: { ...counters.week, puzzles: counters.week.puzzles + 1 },
+        },
       }
     }
 
@@ -93,34 +232,42 @@ function reducer(state, action) {
       const building = COMMUNITY.buildings.find((b) => b.id === action.id)
       if (!building || state.builtBuildings.includes(action.id)) return state
       if (state.legacyPoints < action.cost) return state
+      const { xp, counters } = addXp(state, 20)
       return {
         ...state,
         legacyPoints: state.legacyPoints - action.cost,
         builtBuildings: addUnique(state.builtBuildings, action.id),
+        xp,
+        counters: { ...counters, week: { ...counters.week, buildings: counters.week.buildings + 1 } },
       }
     }
 
-    case 'VISIT_CULTURE':
-      return { ...state, visitedCulture: addUnique(state.visitedCulture, action.id) }
+    case 'VISIT_CULTURE': {
+      if (state.visitedCulture.includes(action.id)) return state
+      const { xp, counters } = addXp(state, 10)
+      return { ...state, visitedCulture: addUnique(state.visitedCulture, action.id), xp, counters }
+    }
 
     case 'COMPLETE_DAILY': {
-      if (state.daily.lastCompleted === action.date) return state // already done today
-      // Continue the streak only if the last completion was exactly yesterday.
+      if (state.daily.lastCompleted === action.date) return state
       const streak =
         state.daily.lastCompleted === action.yesterday ? state.daily.streak + 1 : 1
       let collectibles = state.collectibles
       const reward = STREAK_REWARDS[streak]
       if (reward) collectibles = addUnique(collectibles, reward)
+      const { xp, counters } = addXp(state, action.points)
       return {
         ...state,
         legacyPoints: state.legacyPoints + action.points,
         collectibles,
         daily: { lastCompleted: action.date, streak },
+        xp,
+        counters: { ...counters, day: { ...counters.day, dailyDone: 1 } },
       }
     }
 
     case 'RESET':
-      return initialState
+      return { ...initialState, counters: emptyCounters() }
 
     default:
       return state
@@ -136,9 +283,14 @@ export function GameProvider({ children }) {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
     } catch {
-      /* storage may be unavailable (private mode); the app still runs in-memory */
+      /* storage unavailable (private mode); app still runs in-memory */
     }
   }, [state])
+
+  // Reset daily/weekly counters if the app is open across a boundary.
+  useEffect(() => {
+    dispatch({ type: 'SYNC_PERIOD' })
+  }, [])
 
   return <GameContext.Provider value={{ state, dispatch }}>{children}</GameContext.Provider>
 }

@@ -1,5 +1,6 @@
 import { useGame } from '../state/GameContext.jsx'
 import { PageHeader, Pill } from '../components/ui.jsx'
+import { audio } from '../audio/engine.js'
 import { CULTURE } from '../data/culture.js'
 
 export default function Culture() {
@@ -36,7 +37,10 @@ export default function Culture() {
                   {!visited && (
                     <button
                       className="btn"
-                      onClick={() => dispatch({ type: 'VISIT_CULTURE', id: c.id })}
+                      onClick={() => {
+                        audio.play('unlock')
+                        dispatch({ type: 'VISIT_CULTURE', id: c.id })
+                      }}
                     >
                       Listen &amp; learn
                     </button>

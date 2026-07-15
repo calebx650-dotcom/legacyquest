@@ -1,9 +1,16 @@
 import { useGame } from '../state/GameContext.jsx'
 import { PageHeader, Pill } from '../components/ui.jsx'
+import { audio } from '../audio/engine.js'
 import { ERAS } from '../data/eras.js'
 
 export default function Eras() {
   const { state, dispatch } = useGame()
+
+  function restore(era) {
+    audio.setEraMood(era.id)
+    audio.play('unlock')
+    dispatch({ type: 'UNLOCK_ERA', id: era.id })
+  }
 
   return (
     <div className="view">
@@ -41,7 +48,7 @@ export default function Eras() {
                 <button
                   className="btn btn-primary"
                   disabled={!affordable}
-                  onClick={() => dispatch({ type: 'UNLOCK_ERA', id: era.id })}
+                  onClick={() => restore(era)}
                 >
                   {affordable
                     ? `Restore this era (−${era.unlockCost} pts)`

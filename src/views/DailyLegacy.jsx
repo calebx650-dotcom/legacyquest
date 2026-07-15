@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useGame } from '../state/GameContext.jsx'
 import { PageHeader, Reward } from '../components/ui.jsx'
+import { audio } from '../audio/engine.js'
 import { DAILY_POOL } from '../data/daily.js'
 
 // Local YYYY-MM-DD (avoids UTC off-by-one across time zones).
@@ -36,6 +37,7 @@ export default function DailyLegacy() {
   function submit(option) {
     if (alreadyDone || picked) return
     setPicked(option)
+    audio.play(option === challenge.answer ? 'solve' : 'wrong')
     if (option === challenge.answer) {
       dispatch({
         type: 'COMPLETE_DAILY',

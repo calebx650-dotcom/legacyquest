@@ -1,14 +1,27 @@
 import { Link } from 'react-router-dom'
 import { useGame } from '../state/GameContext.jsx'
-import { PageHeader } from '../components/ui.jsx'
+import { PageHeader, Reward } from '../components/ui.jsx'
+import Speak from '../components/Speak.jsx'
+import { audio } from '../audio/engine.js'
 import { ERAS } from '../data/eras.js'
 import { MYSTERIES } from '../data/mysteries.js'
 import { PUZZLES } from '../data/puzzles.js'
 import { MENTORS } from '../data/mentors.js'
 import { COMMUNITY } from '../data/community.js'
+import { featuredForDate, featuredId } from '../data/thisday.js'
 
 export default function Dashboard() {
-  const { state } = useGame()
+  const { state, dispatch } = useGame()
+
+  const featured = featuredForDate()
+  const fid = featuredId()
+  const claimedToday = state.thisDayClaimed === fid
+
+  function claimThisDay() {
+    if (claimedToday) return
+    audio.play('unlock')
+    dispatch({ type: 'CLAIM_THIS_DAY', id: fid })
+  }
 
   const progress = [
     { label: 'Eras restored', done: state.unlockedEras.length, total: ERAS.length, to: '/eras' },
@@ -49,6 +62,26 @@ export default function Dashboard() {
         title="Keeper’s Hall"
         subtitle="The Eraser is unmaking Black history. As a Legacy Keeper, restore it — one story at a time."
       />
+
+      <section className="thisday-card">
+        <div className="thisday-head">
+          <span className="kicker">
+            {featured.exact ? 'This Day in Black History' : 'Featured moment in Black history'}
+          </span>
+          <span className="thisday-date">{featured.dateLabel}</span>
+        </div>
+        <p className="thisday-text">
+          {featured.text}
+          <Speak text={`On ${featured.dateLabel}. ${featured.text}`} />
+        </p>
+        {claimedToday ? (
+          <Reward points={10}>Explored today’s moment — come back tomorrow for another.</Reward>
+        ) : (
+          <button className="btn btn-primary" onClick={claimThisDay}>
+            Explore &amp; claim bonus (+10 pts, +15 XP)
+          </button>
+        )}
+      </section>
 
       <section className="hero-card">
         <div className="hero-body">

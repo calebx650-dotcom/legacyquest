@@ -1,5 +1,6 @@
 import { useGame } from '../state/GameContext.jsx'
 import { PageHeader, Pill } from '../components/ui.jsx'
+import { audio } from '../audio/engine.js'
 import { MENTORS } from '../data/mentors.js'
 import { ERAS } from '../data/eras.js'
 
@@ -60,7 +61,10 @@ export default function Mentors() {
                 <button
                   className="btn btn-primary"
                   disabled={!affordable}
-                  onClick={() => dispatch({ type: 'UNLOCK_MENTOR', mentor: m })}
+                  onClick={() => {
+                    audio.play('unlock')
+                    dispatch({ type: 'UNLOCK_MENTOR', mentor: m })
+                  }}
                 >
                   {affordable
                     ? `Recruit (−${m.unlockCost} pts)`
