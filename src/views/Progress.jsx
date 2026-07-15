@@ -3,6 +3,7 @@ import { PageHeader, Pill } from '../components/ui.jsx'
 import { getLevelInfo, achievementCtx } from '../game/selectors.js'
 import { ACHIEVEMENTS } from '../data/achievements.js'
 import { TITLES, earnedTitles } from '../data/titles.js'
+import { MENTORS } from '../data/mentors.js'
 
 export default function Progress() {
   const { state, dispatch } = useGame()
@@ -35,6 +36,33 @@ export default function Progress() {
           </p>
         </div>
       </section>
+
+      <h3 className="section-label">Companion</h3>
+      {state.unlockedMentors.length === 0 ? (
+        <p className="empty-note">
+          Recruit a mentor to choose a companion who guides you as you play.
+        </p>
+      ) : (
+        <div className="grid grid-titles">
+          <button
+            className={`title-card has ${!state.activeCompanion ? 'active' : ''}`}
+            onClick={() => dispatch({ type: 'SET_COMPANION', id: null })}
+          >
+            <span className="title-name">None</span>
+            <span className="title-hint">Travel solo</span>
+          </button>
+          {MENTORS.filter((m) => state.unlockedMentors.includes(m.id)).map((m) => (
+            <button
+              key={m.id}
+              className={`title-card has ${state.activeCompanion === m.id ? 'active' : ''}`}
+              onClick={() => dispatch({ type: 'SET_COMPANION', id: m.id })}
+            >
+              <span className="title-name">{m.name}</span>
+              <span className="title-hint">{m.teaches}</span>
+            </button>
+          ))}
+        </div>
+      )}
 
       <h3 className="section-label">Titles</h3>
       <div className="grid grid-titles">

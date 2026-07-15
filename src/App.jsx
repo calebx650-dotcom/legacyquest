@@ -16,6 +16,12 @@ import Quests from './views/Quests.jsx'
 import Progress from './views/Progress.jsx'
 import Teacher from './views/Teacher.jsx'
 import Leaderboards from './views/Leaderboards.jsx'
+import Stories from './views/Stories.jsx'
+import Events from './views/Events.jsx'
+import Account from './views/Account.jsx'
+import Analytics from './views/Analytics.jsx'
+import Studio from './views/Studio.jsx'
+import Offline from './views/Offline.jsx'
 
 export default function App() {
   const { state } = useGame()
@@ -37,8 +43,10 @@ export default function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/daily" element={<DailyLegacy />} />
           <Route path="/quests" element={<Quests />} />
+          <Route path="/events" element={<Events />} />
           <Route path="/eras" element={<Eras />} />
           <Route path="/mysteries" element={<Mysteries />} />
+          <Route path="/stories" element={<Stories />} />
           <Route path="/puzzles" element={<PuzzleLab />} />
           <Route path="/mentors" element={<Mentors />} />
           <Route path="/community" element={<Community />} />
@@ -47,6 +55,10 @@ export default function App() {
           <Route path="/progress" element={<Progress />} />
           <Route path="/teacher" element={<Teacher />} />
           <Route path="/leaderboards" element={<Leaderboards />} />
+          <Route path="/analytics" element={<Analytics />} />
+          <Route path="/studio" element={<Studio />} />
+          <Route path="/offline" element={<Offline />} />
+          <Route path="/account" element={<Account />} />
           <Route path="*" element={<Dashboard />} />
         </Routes>
       </Layout>

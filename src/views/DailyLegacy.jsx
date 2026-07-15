@@ -2,7 +2,9 @@ import { useMemo, useState } from 'react'
 import { useGame } from '../state/GameContext.jsx'
 import { PageHeader, Reward } from '../components/ui.jsx'
 import { audio } from '../audio/engine.js'
-import { DAILY_POOL } from '../data/daily.js'
+import { analytics } from '../game/analytics.js'
+import { allDailyQuestions } from '../content/store.js'
+import { STREAK_MILESTONES } from '../data/collectibles.js'
 
 // Local YYYY-MM-DD (avoids UTC off-by-one across time zones).
 function ymd(date) {
@@ -29,7 +31,11 @@ export default function DailyLegacy() {
   const todayStr = ymd(today)
   const yesterdayStr = ymd(new Date(today.getTime() - 86_400_000))
 
-  const challenge = useMemo(() => DAILY_POOL[dayIndex(today) % DAILY_POOL.length], [todayStr])
+  const challenge = useMemo(() => {
+    const pool = allDailyQuestions()
+    return pool[dayIndex(today) % pool.length]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [todayStr])
 
   const alreadyDone = state.daily.lastCompleted === todayStr
   const correct = picked === challenge.answer
@@ -38,6 +44,11 @@ export default function DailyLegacy() {
     if (alreadyDone || picked) return
     setPicked(option)
     audio.play(option === challenge.answer ? 'solve' : 'wrong')
+    analytics.track('answer', {
+      id: `daily-${challenge.id}`,
+      label: `Daily: ${challenge.quotePrompt}`,
+      correct: option === challenge.answer,
+    })
     if (option === challenge.answer) {
       dispatch({
         type: 'COMPLETE_DAILY',
@@ -67,9 +78,13 @@ export default function DailyLegacy() {
           </span>
         </div>
         <div className="streak-track">
-          {[3, 7, 14].map((n) => (
-            <span key={n} className={`streak-node ${state.daily.streak >= n ? 'hit' : ''}`}>
-              {n}
+          {STREAK_MILESTONES.map((m) => (
+            <span
+              key={m.days}
+              className={`streak-node ${state.daily.streak >= m.days ? 'hit' : ''}`}
+              title={`${m.label} streak reward`}
+            >
+              {m.days}
             </span>
           ))}
         </div>

@@ -42,9 +42,23 @@ fictional, but the history is accurate.
 | 🏆 **Leaderboards & Seasons** | Weekly mystery competitions, monthly artifact hunts, and a school-wide challenge |
 | 🎓 **Teacher Mode** | Class progress dashboard, quiz reports, assignment creation, and **printable worksheets** |
 
+### More modes & tools
+| Mode | What you do |
+|---|---|
+| 📖 **Narrated Stories** | Short, branching interactive stories whose choices reveal different historical perspectives — with optional voice narration |
+| 🎁 **Events** | Weekend **double-XP** (real), holiday events (Juneteenth, MLK Day, Black History Month, Kwanzaa), and a weekly **hidden-artifact hunt** |
+| 📊 **Analytics** | On-device product dashboard: session length, hardest questions, most/least-visited screens, likely quit points, and Day-1/7/30 retention |
+| 🛠️ **Content Studio** | Add new eras, daily questions, and artifacts **without touching code** — they merge into the live game and export/import as JSON packs |
+| 📥 **Offline & Packs** | Installable PWA that works fully offline after first load (for classrooms with unreliable internet) |
+| 👤 **Account** | Simulated Google/Apple sign-in + **sync codes** to move your full save between devices |
+
 ### Systems
 - **Progression:** Legacy Points (unlock content) + XP/levels (mastery), with a
-  satisfying "one more level" curve.
+  satisfying "one more level" curve, achievement badges, and titles.
+- **Streaks:** 3/7/30/100/365-day milestones with special streak artifacts and a
+  return reminder.
+- **Companions:** set any recruited mentor (from different eras) as your
+  companion for in-character guidance as you play.
 - **Difficulty tiers:** Explorer (kids) · Scholar (standard) · Historian
   (challenging) · Legacy Keeper (expert). These change hint/clue availability
   and XP rewards **without changing the history**.
@@ -54,6 +68,17 @@ fictional, but the history is accurate.
 - **Accessibility:** text-to-speech (read-aloud), dyslexia-friendly font,
   adjustable text size, high-contrast mode, colorblind-friendly status colors,
   and caption options — all in Settings.
+
+### What's real vs. simulated (no backend)
+This is a static, offline-capable SPA with **no server**. Where a feature would
+normally need a backend, the prototype is honest about it:
+- **Cross-device progress** is real via export/import **sync codes**
+  (`src/game/save.js`), and that file documents the `SyncProvider` seam where a
+  real backend (Supabase/Firebase) + Google/Apple OAuth would plug in.
+- **Analytics** are real but **on-device only** (single-player view of what a
+  real dashboard would aggregate across users).
+- **Leaderboards, community challenges, and the Teacher Mode roster** use clearly
+  labeled **sample data**; your own stats are real and blended in.
 
 ---
 
@@ -83,13 +108,16 @@ The `dist/` build is fully static and can be hosted anywhere or opened offline.
 src/
   data/         Verified content: eras, mentors, mysteries, puzzles,
                 collectibles, community, culture, daily, quests, titles,
-                achievements, onboarding, thisday (This Day in Black History)
-  game/         progression (XP/level/difficulty math) + selectors
+                achievements, onboarding, thisday, stories, events, companions
+  content/      store.js — merges base content with Content Studio additions
+  game/         progression + selectors + save (sync codes) + analytics
   audio/        engine.js — generative Web Audio music + SFX
   state/        GameContext — reducer + localStorage persistence
   components/   Layout, Onboarding, ComicPanel, SettingsPanel, GameSystems
-                (achievements/quests/level-ups/accessibility), Speak (TTS)
+                (achievements/quests/level-ups/analytics/accessibility), Speak
   views/        One file per screen
+public/
+  sw.js, manifest.webmanifest   PWA offline support
 ```
 
 All game state lives in `src/state/GameContext.jsx`; points, XP, quests,

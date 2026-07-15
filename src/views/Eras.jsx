@@ -1,10 +1,11 @@
 import { useGame } from '../state/GameContext.jsx'
 import { PageHeader, Pill } from '../components/ui.jsx'
 import { audio } from '../audio/engine.js'
-import { ERAS } from '../data/eras.js'
+import { allEras } from '../content/store.js'
 
 export default function Eras() {
   const { state, dispatch } = useGame()
+  const ERAS = allEras()
 
   function restore(era) {
     audio.setEraMood(era.id)

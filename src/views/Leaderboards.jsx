@@ -21,6 +21,26 @@ const MONTHS = [
   'July', 'August', 'September', 'October', 'November', 'December',
 ]
 
+// City/nation-wide collective goals. Seeded base + the player's live contribution.
+const COMMUNITY_CHALLENGES = [
+  {
+    id: 'harlem-million',
+    title: 'One Million on the Harlem Renaissance',
+    blurb: 'Answer 1,000,000 questions about the Harlem Renaissance, together.',
+    goal: 1_000_000,
+    base: 742_318,
+    yours: (s) => s.solvedMysteries.length + s.visitedCulture.length + (s.daily.streak || 0),
+  },
+  {
+    id: 'artifacts-city',
+    title: 'City Artifact Drive',
+    blurb: 'Recover 250,000 artifacts across the city this season.',
+    goal: 250_000,
+    base: 188_204,
+    yours: (s) => s.collectibles.length,
+  },
+]
+
 function daysLeftInWeek() {
   const now = new Date()
   const day = (now.getDay() + 6) % 7 // Mon=0
@@ -129,6 +149,35 @@ export default function Leaderboards() {
           {schoolProgress} / {schoolGoal} recovered ({schoolPct}%)
         </p>
       </section>
+
+      <h3 className="section-label">Community Challenges</h3>
+      <p className="demo-note">
+        City- and nation-wide goals everyone contributes to. Real aggregation needs a backend;
+        totals below are seeded, and your contribution is counted live.
+      </p>
+      <div className="grid grid-two">
+        {COMMUNITY_CHALLENGES.map((c) => {
+          const yours = c.yours(state)
+          const total = c.base + yours
+          const pct = Math.min(100, Math.round((total / c.goal) * 100))
+          return (
+            <section key={c.id} className="card">
+              <div className="board-head">
+                <h3>{c.title}</h3>
+                <Pill tone="accent">{pct}%</Pill>
+              </div>
+              <p className="muted small">{c.blurb}</p>
+              <div className="bar big">
+                <div className="bar-fill" style={{ width: `${pct}%` }} />
+              </div>
+              <p className="muted small">
+                {total.toLocaleString()} / {c.goal.toLocaleString()} · your contribution:{' '}
+                {yours.toLocaleString()}
+              </p>
+            </section>
+          )
+        })}
+      </div>
     </div>
   )
 }

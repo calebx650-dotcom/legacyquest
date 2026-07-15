@@ -129,13 +129,92 @@ export const COLLECTIBLES = {
     blurb:
       'The emblem of the Tuskegee Airmen, the first Black military aviators in the U.S. Army Air Forces, who flew with distinction in World War II.',
   },
+
+  // --- Streak reward artifacts ---
+  'streak-30': {
+    id: 'streak-30',
+    name: 'Lantern of Persistence',
+    category: 'Streak Relic',
+    rarity: 'rare',
+    icon: '🏮',
+    era: 'reconstruction',
+    blurb: 'Awarded for a 30-day streak — a light kept burning night after night.',
+  },
+  'streak-100': {
+    id: 'streak-100',
+    name: 'Centennial Flame',
+    category: 'Streak Relic',
+    rarity: 'legendary',
+    icon: '🔥',
+    era: 'reconstruction',
+    blurb: 'A 100-day streak. Few Keepers carry the flame this far.',
+  },
+  'streak-365': {
+    id: 'streak-365',
+    name: 'Eternal Beacon',
+    category: 'Streak Relic',
+    rarity: 'legendary',
+    icon: '🌟',
+    era: 'afrofuturism',
+    blurb: 'A full year, unbroken. The Eraser has no power over a memory kept this faithfully.',
+  },
+
+  // --- Event / hidden artifacts ---
+  'event-juneteenth': {
+    id: 'event-juneteenth',
+    name: 'Juneteenth Freedom Flag',
+    category: 'Event',
+    rarity: 'legendary',
+    icon: '🎉',
+    era: 'reconstruction',
+    blurb: 'A commemorative artifact of Juneteenth — the day freedom finally reached Galveston.',
+  },
+  'hidden-lantern': {
+    id: 'hidden-lantern',
+    name: 'Signal Lantern',
+    category: 'Hidden',
+    rarity: 'rare',
+    icon: '🪔',
+    era: 'reconstruction',
+    blurb: 'A hidden lantern, once used to signal that a station on the Railroad was safe.',
+  },
+  'hidden-quilt': {
+    id: 'hidden-quilt',
+    name: 'Freedom Quilt',
+    category: 'Hidden',
+    rarity: 'rare',
+    icon: '🧵',
+    era: 'reconstruction',
+    blurb:
+      'A quilt of the kind folklore associates with the Underground Railroad — its patterns a subject of oral tradition.',
+  },
+  'hidden-almanac': {
+    id: 'hidden-almanac',
+    name: 'Banneker’s Almanac',
+    category: 'Hidden',
+    rarity: 'rare',
+    icon: '📔',
+    era: 'reconstruction',
+    blurb:
+      'A hidden edition of Benjamin Banneker’s almanac, filled with astronomical calculations by the self-taught scientist.',
+  },
 }
 
 // Awarded by the Daily Legacy streak system at these thresholds.
 export const STREAK_REWARDS = {
   3: 'recording-spiritual',
   7: 'photo-harlem',
-  14: 'card-johnson',
+  30: 'streak-30',
+  100: 'streak-100',
+  365: 'streak-365',
 }
+
+// Streak milestones surfaced in the UI (label + optional artifact).
+export const STREAK_MILESTONES = [
+  { days: 7, label: 'One week', artifact: 'photo-harlem' },
+  { days: 30, label: 'One month', artifact: 'streak-30' },
+  { days: 100, label: '100 days', artifact: 'streak-100' },
+  { days: 365, label: 'One year', artifact: 'streak-365' },
+]
 
 export const RARITY_ORDER = ['legendary', 'rare', 'common']

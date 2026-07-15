@@ -7,8 +7,10 @@
 // Renders the toast stack. Mounted once, near the app root.
 
 import { useEffect, useRef, useState, useCallback } from 'react'
+import { useLocation } from 'react-router-dom'
 import { useGame } from '../state/GameContext.jsx'
 import { audio } from '../audio/engine.js'
+import { analytics } from '../game/analytics.js'
 import { ACHIEVEMENTS } from '../data/achievements.js'
 import { ALL_QUESTS } from '../data/quests.js'
 import { achievementCtx, getLevel } from '../game/selectors.js'
@@ -17,9 +19,15 @@ let toastSeq = 0
 
 export default function GameSystems() {
   const { state, dispatch } = useGame()
+  const location = useLocation()
   const [toasts, setToasts] = useState([])
   const levelRef = useRef(getLevel(state))
   const firstRun = useRef(true)
+
+  // Track screen visits for the analytics dashboard.
+  useEffect(() => {
+    analytics.track('view', { path: location.pathname })
+  }, [location.pathname])
 
   const pushToast = useCallback((toast) => {
     const id = ++toastSeq

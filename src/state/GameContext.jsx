@@ -1,12 +1,14 @@
 import { createContext, useContext, useEffect, useReducer } from 'react'
-import { ERAS } from '../data/eras.js'
 import { MYSTERIES } from '../data/mysteries.js'
 import { PUZZLES } from '../data/puzzles.js'
 import { COMMUNITY } from '../data/community.js'
 import { STREAK_REWARDS } from '../data/collectibles.js'
 import { ONBOARDING } from '../data/onboarding.js'
+import { STORIES } from '../data/stories.js'
 import { ALL_QUESTS, dayKey, weekKey } from '../data/quests.js'
 import { DIFFICULTIES, DEFAULT_DIFFICULTY } from '../game/progression.js'
+import { xpMultiplierForDate } from '../data/events.js'
+import { allEras } from '../content/store.js'
 
 const STORAGE_KEY = 'legacyquest.save.v2'
 
@@ -37,6 +39,8 @@ const initialState = {
   difficulty: DEFAULT_DIFFICULTY,
   settings: defaultSettings,
   activeTitle: 'novice-keeper',
+  account: { signedIn: false, provider: null, name: 'Guest Keeper' },
+  activeCompanion: null,
   achievements: [],
   unlockedEras: ['reconstruction'],
   unlockedMentors: [],
@@ -44,6 +48,8 @@ const initialState = {
   solvedPuzzles: [],
   builtBuildings: [],
   visitedCulture: [],
+  completedStories: [],
+  foundHidden: [],
   collectibles: [],
   daily: { lastCompleted: null, streak: 0 },
   thisDayClaimed: null,
@@ -84,9 +90,10 @@ function rollover(counters) {
   return next
 }
 
-// Add XP (scaled by difficulty) and mirror it into the weekly XP counter.
+// Add XP (scaled by difficulty AND any active event, e.g. double-XP weekends)
+// and mirror it into the weekly XP counter.
 function addXp(state, baseXp) {
-  const gain = Math.round(baseXp * xpMult(state))
+  const gain = Math.round(baseXp * xpMult(state) * xpMultiplierForDate())
   const counters = rollover(state.counters)
   return {
     xp: state.xp + gain,
@@ -113,6 +120,54 @@ function reducer(state, action) {
 
     case 'SET_TITLE':
       return { ...state, activeTitle: action.id }
+
+    case 'SET_ACCOUNT':
+      return { ...state, account: { ...state.account, ...action.patch } }
+
+    case 'SET_COMPANION':
+      return { ...state, activeCompanion: action.id }
+
+    case 'IMPORT_SAVE': {
+      // Replace the whole save with an imported one (from a sync code),
+      // defensively merged so missing fields fall back to defaults.
+      const s = action.state || {}
+      return {
+        ...initialState,
+        ...s,
+        settings: { ...defaultSettings, ...(s.settings || {}) },
+        account: { ...initialState.account, ...(s.account || {}) },
+        counters: rollover(s.counters || emptyCounters()),
+      }
+    }
+
+    case 'COMPLETE_STORY': {
+      const story = STORIES.find((st) => st.id === action.id)
+      if (!story || state.completedStories.includes(action.id)) return state
+      const { xp, counters } = addXp(state, story.rewardXp)
+      return {
+        ...state,
+        legacyPoints: state.legacyPoints + story.rewardPoints,
+        completedStories: addUnique(state.completedStories, action.id),
+        collectibles: story.artifact
+          ? addUnique(state.collectibles, story.artifact)
+          : state.collectibles,
+        xp,
+        counters,
+      }
+    }
+
+    case 'FIND_HIDDEN': {
+      if (state.foundHidden.includes(action.id)) return state
+      const { xp, counters } = addXp(state, 30)
+      return {
+        ...state,
+        foundHidden: addUnique(state.foundHidden, action.id),
+        collectibles: addUnique(state.collectibles, action.id),
+        legacyPoints: state.legacyPoints + 15,
+        xp,
+        counters,
+      }
+    }
 
     case 'UNLOCK_ACHIEVEMENT': {
       if (state.achievements.includes(action.id)) return state
@@ -166,7 +221,7 @@ function reducer(state, action) {
     }
 
     case 'UNLOCK_ERA': {
-      const era = ERAS.find((e) => e.id === action.id)
+      const era = allEras().find((e) => e.id === action.id)
       if (!era || state.unlockedEras.includes(action.id)) return state
       if (state.legacyPoints < era.unlockCost) return state
       const { xp, counters } = addXp(state, 15)

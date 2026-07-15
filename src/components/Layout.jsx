@@ -4,14 +4,18 @@ import { useGame } from '../state/GameContext.jsx'
 import { audio } from '../audio/engine.js'
 import { getLevelInfo } from '../game/selectors.js'
 import { TITLES } from '../data/titles.js'
+import { MENTORS } from '../data/mentors.js'
+import { tipFor } from '../data/companions.js'
 import SettingsPanel from './SettingsPanel.jsx'
 
 const NAV = [
   { to: '/', label: 'Keeper’s Hall', icon: '🏛️', end: true },
   { to: '/daily', label: 'Daily Legacy', icon: '📅' },
   { to: '/quests', label: 'Quests', icon: '🎯' },
+  { to: '/events', label: 'Events', icon: '🎁' },
   { to: '/eras', label: 'Eras', icon: '🧭' },
   { to: '/mysteries', label: 'History Mysteries', icon: '🕵️' },
+  { to: '/stories', label: 'Narrated Stories', icon: '📖' },
   { to: '/puzzles', label: 'Puzzle Lab', icon: '🧩' },
   { to: '/mentors', label: 'Mentors', icon: '⚔️' },
   { to: '/community', label: 'Community Builder', icon: '🏙️' },
@@ -20,6 +24,10 @@ const NAV = [
   { to: '/progress', label: 'Progression', icon: '🏅' },
   { to: '/leaderboards', label: 'Leaderboards', icon: '🏆' },
   { to: '/teacher', label: 'Teacher Mode', icon: '🎓' },
+  { to: '/analytics', label: 'Analytics', icon: '📊' },
+  { to: '/studio', label: 'Content Studio', icon: '🛠️' },
+  { to: '/offline', label: 'Offline & Packs', icon: '📥' },
+  { to: '/account', label: 'Account', icon: '👤' },
 ]
 
 export default function Layout({ children }) {
@@ -27,8 +35,11 @@ export default function Layout({ children }) {
   const [open, setOpen] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
 
+  const [companionOpen, setCompanionOpen] = useState(true)
   const lvl = getLevelInfo(state)
   const title = TITLES.find((t) => t.id === state.activeTitle)?.name ?? 'Legacy Keeper'
+  const companion = MENTORS.find((m) => m.id === state.activeCompanion)
+  const companionTip = companion ? tipFor(companion.id) : null
 
   function toggleMusic() {
     audio.play('click')
@@ -125,6 +136,25 @@ export default function Layout({ children }) {
         </header>
         <main className="content">{children}</main>
       </div>
+
+      {companion && companionOpen && (
+        <div className="companion-widget">
+          <div className="companion-avatar">
+            {companion.name.split(' ').map((w) => w[0]).slice(0, 2).join('')}
+          </div>
+          <div className="companion-bubble">
+            <div className="companion-name">{companion.name}</div>
+            <p>{companionTip}</p>
+          </div>
+          <button
+            className="companion-close"
+            onClick={() => setCompanionOpen(false)}
+            aria-label="Dismiss companion"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       <SettingsPanel open={settingsOpen} onClose={() => setSettingsOpen(false)} />
       {open && <div className="scrim" onClick={() => setOpen(false)} />}

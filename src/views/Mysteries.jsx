@@ -3,6 +3,7 @@ import { useGame } from '../state/GameContext.jsx'
 import { PageHeader, Pill, Reward, EmptyNote } from '../components/ui.jsx'
 import Speak from '../components/Speak.jsx'
 import { audio } from '../audio/engine.js'
+import { analytics } from '../game/analytics.js'
 import { MYSTERIES } from '../data/mysteries.js'
 import { ERAS } from '../data/eras.js'
 import { COLLECTIBLES } from '../data/collectibles.js'
@@ -97,6 +98,11 @@ function MysteryModal({ mystery, onClose }) {
   function choose(id) {
     if (alreadySolved || picked) return
     setPicked(id)
+    analytics.track('answer', {
+      id: `mystery-${mystery.id}`,
+      label: `Mystery: ${mystery.title}`,
+      correct: id === mystery.answerId,
+    })
     if (id === mystery.answerId) {
       audio.play('solve')
       dispatch({ type: 'SOLVE_MYSTERY', id: mystery.id })

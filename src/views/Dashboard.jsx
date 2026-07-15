@@ -3,12 +3,13 @@ import { useGame } from '../state/GameContext.jsx'
 import { PageHeader, Reward } from '../components/ui.jsx'
 import Speak from '../components/Speak.jsx'
 import { audio } from '../audio/engine.js'
-import { ERAS } from '../data/eras.js'
+import { allEras } from '../content/store.js'
 import { MYSTERIES } from '../data/mysteries.js'
 import { PUZZLES } from '../data/puzzles.js'
 import { MENTORS } from '../data/mentors.js'
 import { COMMUNITY } from '../data/community.js'
 import { featuredForDate, featuredId } from '../data/thisday.js'
+import { activeEvents } from '../data/events.js'
 
 export default function Dashboard() {
   const { state, dispatch } = useGame()
@@ -17,6 +18,14 @@ export default function Dashboard() {
   const fid = featuredId()
   const claimedToday = state.thisDayClaimed === fid
 
+  const events = activeEvents()
+  const now = new Date()
+  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(
+    now.getDate(),
+  ).padStart(2, '0')}`
+  const dailyDone = state.daily.lastCompleted === todayStr
+  const streak = state.daily.streak || 0
+
   function claimThisDay() {
     if (claimedToday) return
     audio.play('unlock')
@@ -24,7 +33,7 @@ export default function Dashboard() {
   }
 
   const progress = [
-    { label: 'Eras restored', done: state.unlockedEras.length, total: ERAS.length, to: '/eras' },
+    { label: 'Eras restored', done: state.unlockedEras.length, total: allEras().length, to: '/eras' },
     {
       label: 'Mysteries solved',
       done: state.solvedMysteries.length,
@@ -62,6 +71,31 @@ export default function Dashboard() {
         title="Keeper’s Hall"
         subtitle="The Eraser is unmaking Black history. As a Legacy Keeper, restore it — one story at a time."
       />
+
+      {events.length > 0 && (
+        <div className="event-banner">
+          <span className="event-banner-icon">{events[0].icon}</span>
+          <span>
+            <strong>{events[0].name} is live!</strong> {events[0].blurb}
+          </span>
+          <Link className="btn btn-sm" to="/events">
+            View events
+          </Link>
+        </div>
+      )}
+
+      {streak > 0 && !dailyDone && (
+        <div className="reminder-banner">
+          <span>🔥</span>
+          <span>
+            You have a <strong>{streak}-day streak</strong> — don’t break it! Today’s Daily Legacy is
+            waiting.
+          </span>
+          <Link className="btn btn-sm" to="/daily">
+            Keep it alive
+          </Link>
+        </div>
+      )}
 
       <section className="thisday-card">
         <div className="thisday-head">
