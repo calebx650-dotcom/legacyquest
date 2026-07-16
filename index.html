@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#14101f" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta
+      name="description"
+      content="LegacyQuest — Don't just learn Black history, live it. Travel through eras, solve historical mysteries, and rebuild lost communities."
+    />
+    <title>LegacyQuest</title>
+    <script type="module" crossorigin src="./assets/index-CV-z3AS0.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-B71Xowpq.css">
+  </head>
+  <body>
+    <!-- Launch splash: shown instantly, faded out once React mounts -->
+    <style>
+      #splash {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: grid;
+        place-items: center;
+        background: #0d0916;
+        transition: opacity 0.45s ease;
+      }
+      #splash.is-done {
+        opacity: 0;
+        pointer-events: none;
+      }
+      #splash .flame {
+        font-size: 54px;
+        animation: splashPulse 1.6s ease-in-out infinite;
+      }
+      #splash .name {
+        margin-top: 14px;
+        font-family: 'Palatino Linotype', Palatino, Georgia, serif;
+        font-size: 22px;
+        letter-spacing: 0.06em;
+        color: #f6f1ff;
+      }
+      #splash .tag {
+        margin-top: 6px;
+        font-family: system-ui, sans-serif;
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: #f4b942;
+      }
+      @keyframes splashPulse {
+        0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(244, 185, 66, 0.4)); }
+        50% { transform: scale(1.08); filter: drop-shadow(0 0 22px rgba(244, 185, 66, 0.8)); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #splash .flame { animation: none; }
+      }
+    </style>
+    <div id="splash" aria-hidden="true">
+      <div style="text-align: center">
+        <div class="flame">🔥</div>
+        <div class="name">LegacyQuest</div>
+        <div class="tag">Restore · Remember · Rise</div>
+      </div>
+    </div>
+    <div id="root"></div>
+  </body>
+</html>

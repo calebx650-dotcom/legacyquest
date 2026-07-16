@@ -1,0 +1,18 @@
+{
+  "name": "LegacyQuest",
+  "short_name": "LegacyQuest",
+  "description": "Don't just learn Black history — live it.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#14101f",
+  "theme_color": "#14101f",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
