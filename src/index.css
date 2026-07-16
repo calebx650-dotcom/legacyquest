@@ -3495,3 +3495,270 @@ button:focus:not(:focus-visible) {
   color: var(--ink-soft);
   line-height: 1.6;
 }
+
+/* ============================================================
+   REFERENCE SKIN — charcoal • gold • violet
+   Matches the provided mobile design reference: near-black
+   canvas, gold as the dominant identity color, violet for
+   interactive accents/progress, mobile bottom tab bar.
+   ============================================================ */
+
+:root {
+  --bg: #0b0a10;
+  --bg-2: #110f17;
+  --panel: #16131d;
+  --panel-2: #1e1a27;
+  --line: #2d2838;
+  --line-soft: #221e2c;
+  --ink: #f4efe4;
+  --ink-soft: #cfc7ba;
+  --muted: #8f8899;
+
+  --gold: #e9b949;
+  --gold-bright: #f6d47c;
+  --gold-deep: #b98a1e;
+  --violet: #8b5cf6;
+  --violet-deep: #6d3fd4;
+  --purple: #8b5cf6;
+  --blue: #9d7bf0;
+
+  --grad-gold: linear-gradient(135deg, #f6d47c, #e9b949 45%, #b98a1e);
+  --grad-ember: linear-gradient(135deg, #f6d47c, #e9b949);
+  --grad-cosmic: linear-gradient(90deg, #8b5cf6, #6d3fd4);
+
+  --glow-gold: 0 0 22px rgba(233, 185, 73, 0.22);
+}
+
+body {
+  background:
+    radial-gradient(900px 420px at 50% -12%, rgba(233, 185, 73, 0.07), transparent 60%),
+    radial-gradient(700px 500px at 100% 110%, rgba(139, 92, 246, 0.07), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
+}
+
+/* Gold serif identity */
+.brand-name,
+.page-title {
+  color: var(--gold);
+  -webkit-text-fill-color: currentColor;
+  background: none;
+  letter-spacing: 0.04em;
+}
+.brand-tag {
+  color: var(--muted);
+  letter-spacing: 0.24em;
+}
+.section-label,
+.kicker,
+.block-label,
+.drawer-label {
+  color: var(--gold);
+}
+
+/* Buttons: gold primary (uppercase pills), violet interactive */
+.btn {
+  border-radius: 12px;
+}
+.btn-primary {
+  background: var(--grad-gold);
+  border-color: var(--gold-deep);
+  color: #241a04;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 12.5px;
+  font-weight: 800;
+}
+.btn-violet {
+  background: var(--grad-cosmic);
+  border-color: var(--violet-deep);
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 12.5px;
+  font-weight: 800;
+}
+.btn-violet:hover:not(:disabled) {
+  box-shadow: 0 8px 22px rgba(139, 92, 246, 0.35);
+}
+
+/* Progress = violet, like the reference */
+.bar-fill,
+.xp-fill {
+  background: var(--grad-cosmic);
+}
+.chip-points {
+  border-color: var(--gold-deep);
+  background: linear-gradient(90deg, rgba(233, 185, 73, 0.14), var(--panel));
+}
+
+/* Interactive rows highlight violet */
+.option:hover:not(:disabled),
+.story-choice:hover,
+.match-item:hover:not(:disabled) {
+  border-color: var(--violet);
+}
+.match-item.selected {
+  border-color: var(--violet);
+  background: rgba(139, 92, 246, 0.14);
+}
+
+/* Sidebar & topbar on the darker canvas */
+.sidebar {
+  background: linear-gradient(180deg, #100d17, #0b0a10);
+}
+.topbar {
+  background: rgba(11, 10, 16, 0.85);
+}
+.nav-link.is-active {
+  background: linear-gradient(90deg, rgba(233, 185, 73, 0.16), rgba(233, 185, 73, 0.03));
+}
+
+/* Era list → numbered vertical timeline with locks (reference #5) */
+.era-rail {
+  counter-reset: era;
+  position: relative;
+  padding-left: 52px;
+}
+.era-rail::before {
+  content: '';
+  position: absolute;
+  left: 19px;
+  top: 16px;
+  bottom: 16px;
+  width: 2px;
+  background: linear-gradient(180deg, var(--gold-deep), var(--violet-deep));
+  opacity: 0.45;
+}
+.era-card {
+  position: relative;
+}
+.era-card::before {
+  counter-increment: era;
+  content: counter(era);
+  position: absolute;
+  left: -52px;
+  top: 22px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--gold);
+  background: var(--bg);
+  border: 2px solid var(--accent, var(--gold));
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent, var(--gold)) 35%, transparent);
+  z-index: 1;
+}
+.era-locked::before {
+  color: var(--muted);
+  border-color: var(--line);
+  box-shadow: none;
+}
+
+/* Streak milestones → flame row (reference #2) */
+.streak-track .streak-node {
+  width: auto;
+  height: auto;
+  border: none;
+  background: none;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.streak-track .streak-node::before {
+  content: '🔥';
+  font-size: 22px;
+  filter: grayscale(1) opacity(0.35);
+}
+.streak-track .streak-node.hit {
+  color: var(--gold);
+  background: none;
+}
+.streak-track .streak-node.hit::before {
+  filter: none;
+}
+
+/* Museum rarity counters (reference #16) */
+.rarity-counters {
+  display: flex;
+  gap: 26px;
+  margin-bottom: 4px;
+}
+.rarity-counter {
+  text-align: center;
+}
+.rarity-counter strong {
+  display: block;
+  font-family: var(--display);
+  font-size: 26px;
+  color: var(--rc, var(--gold));
+}
+.rarity-counter span {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  color: var(--muted);
+}
+
+/* ---------- Bottom tab bar (mobile, reference frame) ---------- */
+.tabbar {
+  display: none;
+}
+@media (max-width: 860px) {
+  .tabbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 80;
+    display: flex;
+    justify-content: space-around;
+    align-items: stretch;
+    background: rgba(13, 11, 18, 0.96);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--line);
+    padding: 6px 4px calc(8px + env(safe-area-inset-bottom, 0px));
+  }
+  .tab-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 6px 10px;
+    border-radius: 10px;
+    font-size: 10px;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--muted);
+    min-width: 56px;
+  }
+  .tab-icon {
+    font-size: 20px;
+    filter: grayscale(1) opacity(0.6);
+    transition: filter 0.15s, transform 0.15s var(--ease-spring);
+  }
+  .tab-item.is-active {
+    color: var(--gold);
+  }
+  .tab-item.is-active .tab-icon {
+    filter: none;
+    transform: translateY(-2px);
+  }
+  .content {
+    padding-bottom: 110px;
+  }
+  .companion-widget {
+    bottom: 84px;
+  }
+  .toast-stack {
+    bottom: 84px;
+  }
+}

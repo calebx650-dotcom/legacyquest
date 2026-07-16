@@ -80,7 +80,7 @@ export default function Layout({ children }) {
           </span>
           <div>
             <div className="brand-name">LegacyQuest</div>
-            <div className="brand-tag">Live the history.</div>
+            <div className="brand-tag">Restore · Remember · Rise</div>
           </div>
         </div>
         <nav className="nav">
@@ -186,6 +186,28 @@ export default function Layout({ children }) {
           </button>
         </div>
       )}
+
+      <nav className="tabbar" aria-label="Primary">
+        {[
+          { to: '/', icon: '🏛️', label: 'Home', end: true },
+          { to: '/daily', icon: '🎮', label: 'Play' },
+          { to: '/eras', icon: '🧭', label: 'Explore' },
+          { to: '/museum', icon: '🏙️', label: 'Build' },
+          { to: '/progress', icon: '🏅', label: 'Progress' },
+        ].map((t) => (
+          <NavLink
+            key={t.to}
+            to={t.to}
+            end={t.end}
+            className={({ isActive }) => `tab-item ${isActive ? 'is-active' : ''}`}
+          >
+            <span className="tab-icon" aria-hidden>
+              {t.icon}
+            </span>
+            <span>{t.label}</span>
+          </NavLink>
+        ))}
+      </nav>
 
       <SettingsPanel open={settingsOpen} onClose={() => setSettingsOpen(false)} />
       {open && <div className="scrim" onClick={() => setOpen(false)} />}

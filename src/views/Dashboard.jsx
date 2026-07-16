@@ -193,8 +193,8 @@ export default function Dashboard() {
         {claimedToday ? (
           <Reward points={10}>Explored today’s moment — come back tomorrow for another.</Reward>
         ) : (
-          <button className="btn btn-primary" onClick={claimThisDay}>
-            Explore &amp; claim bonus (+10 pts, +15 XP)
+          <button className="btn btn-violet" onClick={claimThisDay}>
+            Claim daily bonus · +10 pts +15 XP
           </button>
         )}
       </section>

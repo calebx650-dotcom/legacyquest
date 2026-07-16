@@ -40,6 +40,14 @@ export default function Museum() {
             <span className="muted"> artifacts recovered</span>
           </div>
         </div>
+        <div className="rarity-counters">
+          {byRarity.map((b) => (
+            <div key={b.rarity} className="rarity-counter" style={{ '--rc': RARITY[b.rarity].color }}>
+              <strong>{b.have}</strong>
+              <span>{RARITY[b.rarity].label}</span>
+            </div>
+          ))}
+        </div>
         <div className="rarity-bars">
           {byRarity.map((b) => (
             <div key={b.rarity} className="rarity-bar-row">
