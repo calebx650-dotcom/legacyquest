@@ -1,11 +1,13 @@
 import { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import { useGame } from '../state/GameContext.jsx'
 import { audio } from '../audio/engine.js'
 import { getLevelInfo } from '../game/selectors.js'
 import { TITLES } from '../data/titles.js'
 import { MENTORS } from '../data/mentors.js'
 import { tipFor } from '../data/companions.js'
+import { MASCOT, mascotTip } from '../data/mascot.js'
+import MascotFace from './Mascot.jsx'
 import SettingsPanel from './SettingsPanel.jsx'
 
 const NAV_GROUPS = [
@@ -61,10 +63,15 @@ export default function Layout({ children }) {
   const [settingsOpen, setSettingsOpen] = useState(false)
 
   const [companionOpen, setCompanionOpen] = useState(true)
+  const location = useLocation()
   const lvl = getLevelInfo(state)
   const title = TITLES.find((t) => t.id === state.activeTitle)?.name ?? 'Legacy Keeper'
+  // A recruited mentor companion takes over; otherwise Professor Sankofa — the
+  // time-traveling partner every Keeper starts with — rides along.
   const companion = MENTORS.find((m) => m.id === state.activeCompanion)
-  const companionTip = companion ? tipFor(companion.id) : null
+  const companionTip = companion
+    ? tipFor(companion.id)
+    : mascotTip(location.pathname)
 
   function toggleMusic() {
     audio.play('click')
@@ -168,13 +175,19 @@ export default function Layout({ children }) {
         <main className="content">{children}</main>
       </div>
 
-      {companion && companionOpen && (
+      {companionOpen && (
         <div className="companion-widget">
-          <div className="companion-avatar">
-            {companion.name.split(' ').map((w) => w[0]).slice(0, 2).join('')}
-          </div>
+          {companion ? (
+            <div className="companion-avatar">
+              {companion.name.split(' ').map((w) => w[0]).slice(0, 2).join('')}
+            </div>
+          ) : (
+            <div className="mascot-avatar">
+              <MascotFace size={54} />
+            </div>
+          )}
           <div className="companion-bubble">
-            <div className="companion-name">{companion.name}</div>
+            <div className="companion-name">{companion ? companion.name : MASCOT.name}</div>
             <p>{companionTip}</p>
           </div>
           <button

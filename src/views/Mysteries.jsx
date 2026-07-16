@@ -8,6 +8,7 @@ import { MYSTERIES } from '../data/mysteries.js'
 import { ERAS } from '../data/eras.js'
 import { COLLECTIBLES } from '../data/collectibles.js'
 import { DIFFICULTIES } from '../game/progression.js'
+import { kidText } from '../game/kids.js'
 
 const eraName = (id) => ERAS.find((e) => e.id === id)?.name ?? id
 
@@ -119,8 +120,8 @@ function MysteryModal({ mystery, onClose }) {
         </button>
         <h2>{mystery.title}</h2>
         <p className="case-brief">
-          {mystery.brief}
-          <Speak text={`${mystery.title}. ${mystery.brief}`} />
+          {kidText(state, mystery.brief, mystery.briefSimple)}
+          <Speak text={`${mystery.title}. ${kidText(state, mystery.brief, mystery.briefSimple)}`} />
         </p>
 
         <h4 className="block-label">🔎 Evidence</h4>
@@ -148,7 +149,7 @@ function MysteryModal({ mystery, onClose }) {
         </div>
 
         <h4 className="block-label">⚖️ Your verdict</h4>
-        <p className="case-question">{mystery.question}</p>
+        <p className="case-question">{kidText(state, mystery.question, mystery.questionSimple)}</p>
         <div className="option-grid">
           {mystery.choices.map((c) => {
             let cls = 'option'
@@ -170,7 +171,12 @@ function MysteryModal({ mystery, onClose }) {
         </div>
 
         {picked && !solvedNow && !alreadySolved && (
-          <p className="feedback-wrong">Not the answer the evidence supports — look again.</p>
+          <div className="case-retry">
+            <p className="feedback-wrong">Not the answer the evidence supports — look again.</p>
+            <button className="btn" onClick={() => setPicked(null)}>
+              Try again
+            </button>
+          </div>
         )}
 
         {showAnswer && (

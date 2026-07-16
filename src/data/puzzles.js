@@ -1,7 +1,9 @@
-// Puzzle Lab — short, varied games. Three types are implemented:
+// Puzzle Lab — short, varied games. Five types are implemented:
 //   match    : pair items across two columns (inventions ↔ inventors)
 //   timeline : drag events into correct chronological order
 //   decode   : substitute a simple cipher to reveal a message
+//   jigsaw   : restore an Eraser-damaged historical photo by swapping tiles
+//   memory   : flip-and-match pairs of mentor cards
 // All content is factual; the timeline uses real, uncontested dates.
 
 export const PUZZLES = [
@@ -46,5 +48,31 @@ export const PUZZLES = [
     shift: 3,
     answer: 'FOLLOW THE DRINKING GOURD',
     note: '“Follow the Drinking Gourd” refers to the Big Dipper, whose pointer stars indicate the North Star — a guide north to freedom.',
+  },
+  {
+    id: 'photo-restore',
+    type: 'jigsaw',
+    title: 'Restore the Damaged Photograph',
+    reward: 25,
+    instructions:
+      'The Eraser scrambled this portrait of Harriet Tubman. Tap two tiles to swap them until the photograph is whole again.',
+    photo: 'harriet-tubman',
+    caption: 'Harriet Tubman, photographed c. 1885 (public domain).',
+    grid: 3,
+  },
+  {
+    id: 'mentor-memory',
+    type: 'memory',
+    title: 'Mentor Memory Match',
+    reward: 20,
+    instructions: 'Flip the cards and match each pair of Legacy mentors.',
+    pairs: [
+      { id: 'tubman', icon: '🧭', label: 'Harriet Tubman' },
+      { id: 'douglass', icon: '✒️', label: 'Frederick Douglass' },
+      { id: 'johnson', icon: '🚀', label: 'Katherine Johnson' },
+      { id: 'walker', icon: '🏢', label: 'Madam C. J. Walker' },
+      { id: 'wells', icon: '📰', label: 'Ida B. Wells' },
+      { id: 'morgan', icon: '🚦', label: 'Garrett Morgan' },
+    ],
   },
 ]

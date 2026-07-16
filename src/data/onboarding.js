@@ -32,9 +32,10 @@ export const ONBOARDING = {
       art: '🔥',
       accent: '#f4b942',
       anim: 'rise',
+      speaker: 'Professor Sankofa',
       kicker: 'A light is chosen',
       title: 'You are named a Legacy Keeper.',
-      text: 'Keepers can travel the timeline and restore what The Eraser steals. The flame has passed to you. Every artifact you recover is a memory saved.',
+      text: '“I’m Professor Sankofa — I built the Chrono-Compass that carries Keepers through time. It just chose you. Every artifact we recover together is a memory saved from the dark.”',
     },
     {
       id: 's4',

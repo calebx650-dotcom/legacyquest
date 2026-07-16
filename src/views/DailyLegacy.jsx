@@ -1,10 +1,12 @@
 import { useMemo, useState } from 'react'
 import { useGame } from '../state/GameContext.jsx'
 import { PageHeader, Reward } from '../components/ui.jsx'
+import Speak from '../components/Speak.jsx'
 import { audio } from '../audio/engine.js'
 import { analytics } from '../game/analytics.js'
 import { allDailyQuestions } from '../content/store.js'
 import { STREAK_MILESTONES } from '../data/collectibles.js'
+import { kidText } from '../game/kids.js'
 
 // Local YYYY-MM-DD (avoids UTC off-by-one across time zones).
 function ymd(date) {
@@ -21,11 +23,17 @@ function dayIndex(date) {
   )
 }
 
-const DAILY_POINTS = 15
+const FULL_POINTS = 15
+const RETRY_POINTS = 8
+const HINT_COST = 5
 
 export default function DailyLegacy() {
   const { state, dispatch } = useGame()
-  const [picked, setPicked] = useState(null)
+  // Wrong picks stay visible and disabled; the player keeps trying — no lockout.
+  const [wrongPicks, setWrongPicks] = useState([])
+  const [solved, setSolved] = useState(false)
+  const [hintUsed, setHintUsed] = useState(false)
+  const [hidden, setHidden] = useState([]) // options removed by the hint
 
   const today = new Date()
   const todayStr = ymd(today)
@@ -38,25 +46,44 @@ export default function DailyLegacy() {
   }, [todayStr])
 
   const alreadyDone = state.daily.lastCompleted === todayStr
-  const correct = picked === challenge.answer
+  const missed = wrongPicks.length > 0
+  const rewardPoints = missed ? RETRY_POINTS : FULL_POINTS
+
+  const factText = kidText(state, challenge.fact, challenge.simple)
+  const promptText = kidText(state, challenge.quotePrompt, challenge.promptSimple)
 
   function submit(option) {
-    if (alreadyDone || picked) return
-    setPicked(option)
-    audio.play(option === challenge.answer ? 'solve' : 'wrong')
+    if (alreadyDone || solved || wrongPicks.includes(option) || hidden.includes(option)) return
+    const correct = option === challenge.answer
+    audio.play(correct ? 'solve' : 'wrong')
     analytics.track('answer', {
       id: `daily-${challenge.id}`,
       label: `Daily: ${challenge.quotePrompt}`,
-      correct: option === challenge.answer,
+      correct,
     })
-    if (option === challenge.answer) {
+    if (correct) {
+      setSolved(true)
       dispatch({
         type: 'COMPLETE_DAILY',
         date: todayStr,
         yesterday: yesterdayStr,
-        points: DAILY_POINTS,
+        points: rewardPoints,
       })
+    } else {
+      setWrongPicks((w) => [...w, option])
     }
+  }
+
+  // Hint: spend points to remove two wrong options (a 50/50).
+  function useHint() {
+    if (hintUsed || solved || alreadyDone || state.legacyPoints < HINT_COST) return
+    audio.play('click')
+    dispatch({ type: 'SPEND_POINTS', points: HINT_COST })
+    const wrongs = challenge.options.filter(
+      (o) => o !== challenge.answer && !wrongPicks.includes(o),
+    )
+    setHidden(wrongs.slice(0, Math.max(0, wrongs.length - 1)).slice(0, 2))
+    setHintUsed(true)
   }
 
   return (
@@ -93,26 +120,34 @@ export default function DailyLegacy() {
       <div className="card daily-card">
         <div className="daily-fact">
           <span className="kicker">Did you know?</span>
-          <p>{challenge.fact}</p>
+          <p>
+            {factText}
+            <Speak text={factText} />
+          </p>
         </div>
 
         <hr className="rule" />
 
         <div className="daily-quiz">
           <span className="kicker">Identify the source</span>
-          <h3>{challenge.quotePrompt}</h3>
+          <h3>
+            {promptText}
+            <Speak text={promptText} />
+          </h3>
           <div className="option-grid">
             {challenge.options.map((opt) => {
+              if (hidden.includes(opt)) return null
               let cls = 'option'
-              if (picked || alreadyDone) {
+              if (solved || alreadyDone) {
                 if (opt === challenge.answer) cls += ' option-correct'
-                else if (opt === picked) cls += ' option-wrong'
+              } else if (wrongPicks.includes(opt)) {
+                cls += ' option-wrong'
               }
               return (
                 <button
                   key={opt}
                   className={cls}
-                  disabled={!!picked || alreadyDone}
+                  disabled={solved || alreadyDone || wrongPicks.includes(opt)}
                   onClick={() => submit(opt)}
                 >
                   {opt}
@@ -121,22 +156,36 @@ export default function DailyLegacy() {
             })}
           </div>
 
-          {alreadyDone && !picked && (
+          {!solved && !alreadyDone && (
+            <div className="daily-actions">
+              <button
+                className="btn hint-btn"
+                onClick={useHint}
+                disabled={hintUsed || state.legacyPoints < HINT_COST}
+                title={`Removes two wrong answers (−${HINT_COST} pts)`}
+              >
+                💡 {hintUsed ? 'Hint used' : `Hint (−${HINT_COST} pts)`}
+              </button>
+              {missed && (
+                <p className="retry-note">
+                  Not quite — try another! (Correct now earns +{RETRY_POINTS} pts)
+                </p>
+              )}
+            </div>
+          )}
+
+          {alreadyDone && !solved && (
             <p className="muted center">
               You’ve completed today’s Daily Legacy. The answer was{' '}
               <strong>{challenge.answer}</strong>.
             </p>
           )}
 
-          {picked &&
-            (correct ? (
-              <Reward points={DAILY_POINTS}>Correct — streak extended!</Reward>
-            ) : (
-              <p className="feedback-wrong">
-                Not quite. The answer was <strong>{challenge.answer}</strong>. Try again tomorrow to
-                build your streak.
-              </p>
-            ))}
+          {solved && (
+            <Reward points={rewardPoints}>
+              {missed ? 'You got there — streak extended!' : 'First try — streak extended!'}
+            </Reward>
+          )}
         </div>
       </div>
     </div>

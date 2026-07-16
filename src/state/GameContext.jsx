@@ -110,6 +110,12 @@ function reducer(state, action) {
     case 'AWARD_POINTS':
       return { ...state, legacyPoints: state.legacyPoints + action.points }
 
+    case 'SPEND_POINTS': {
+      // Used by the hint economy. Never lets the balance go negative.
+      if (state.legacyPoints < action.points) return state
+      return { ...state, legacyPoints: state.legacyPoints - action.points }
+    }
+
     case 'COLLECT':
       return { ...state, collectibles: addUnique(state.collectibles, action.id) }
 

@@ -1,12 +1,13 @@
-// A small "read aloud" button. Only appears when the player has enabled
-// text-to-speech in Settings, and uses the browser's built-in speech synthesis
-// (no network, no external service).
+// A small "read aloud" button. Appears when text-to-speech is enabled in
+// Settings — and always in Explorer (kids) mode, where early readers need it
+// most. Uses the browser's built-in speech synthesis (no network).
 
 import { useGame } from '../state/GameContext.jsx'
+import { isKidsMode } from '../game/kids.js'
 
 export default function Speak({ text, label = 'Read aloud' }) {
   const { state } = useGame()
-  if (!state.settings.tts) return null
+  if (!state.settings.tts && !isKidsMode(state)) return null
 
   const supported = typeof window !== 'undefined' && 'speechSynthesis' in window
 

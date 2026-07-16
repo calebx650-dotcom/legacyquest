@@ -1,10 +1,40 @@
 import { useGame } from '../state/GameContext.jsx'
 import { PageHeader, Pill } from '../components/ui.jsx'
+import { useState } from 'react'
 import { audio } from '../audio/engine.js'
 import { MENTORS } from '../data/mentors.js'
 import { ERAS } from '../data/eras.js'
+import { photoUrl, photoAlt, photoCredit } from '../data/photos.js'
 
 const eraName = (id) => ERAS.find((e) => e.id === id)?.name ?? id
+
+// Real historical portrait with graceful fallback to initials when the image
+// can't load (e.g., offline).
+function Portrait({ mentor }) {
+  const [failed, setFailed] = useState(false)
+  const src = photoUrl(mentor.id)
+  if (!src || failed) {
+    return (
+      <div className="mentor-portrait" aria-hidden>
+        {mentor.name
+          .split(' ')
+          .map((w) => w[0])
+          .slice(0, 2)
+          .join('')}
+      </div>
+    )
+  }
+  return (
+    <img
+      className="mentor-portrait mentor-photo"
+      src={src}
+      alt={photoAlt(mentor.id)}
+      title={photoCredit(mentor.id)}
+      loading="lazy"
+      onError={() => setFailed(true)}
+    />
+  )
+}
 
 export default function Mentors() {
   const { state, dispatch } = useGame()
@@ -25,13 +55,7 @@ export default function Mentors() {
           return (
             <article key={m.id} className={`mentor-card ${unlocked ? 'is-unlocked' : ''}`}>
               <div className="mentor-head">
-                <div className="mentor-portrait" aria-hidden>
-                  {m.name
-                    .split(' ')
-                    .map((w) => w[0])
-                    .slice(0, 2)
-                    .join('')}
-                </div>
+                <Portrait mentor={m} />
                 <div>
                   <h3>{m.name}</h3>
                   <span className="muted">{m.lifespan}</span>

@@ -11,6 +11,8 @@ export const MYSTERIES = [
     reward: 35,
     brief:
       'December 1955, Montgomery, Alabama. The city’s buses sit empty. A year-long boycott has begun — but who set it in motion, and how did an entire community stay off the buses for 381 days?',
+    briefSimple:
+      'Montgomery, Alabama, 1955. Black riders have stopped riding the buses to protest unfair rules. Who started it — and how did they keep it going for 381 days?',
     clues: [
       'On December 1, 1955, a seamstress and NAACP secretary refused to give up her seat to a white passenger and was arrested.',
       'Local activist Jo Ann Robinson and the Women’s Political Council printed and distributed tens of thousands of leaflets overnight calling for a one-day boycott.',
@@ -29,6 +31,7 @@ export const MYSTERIES = [
       },
     ],
     question: 'Whose arrest became the catalyst that launched the boycott?',
+    questionSimple: 'Whose arrest started the bus boycott?',
     choices: [
       { id: 'a', text: 'Rosa Parks, arrested December 1, 1955' },
       { id: 'b', text: 'Claudette Colvin, arrested earlier in March 1955' },
@@ -47,6 +50,8 @@ export const MYSTERIES = [
     reward: 35,
     brief:
       'It was neither underground nor a railroad. So how did thousands of enslaved people find their way to freedom through a network hidden in plain sight?',
+    briefSimple:
+      'The Underground Railroad was not a real train. It was a secret team of brave people helping others escape to freedom. How did it work?',
     clues: [
       'The “railroad” used railway code: guides were “conductors,” safe houses were “stations,” and escapees were “passengers” or “cargo.”',
       'Routes ran mostly north toward free states and Canada, but some led south to Mexico and the Caribbean.',
@@ -65,6 +70,7 @@ export const MYSTERIES = [
       },
     ],
     question: 'In the network’s code, what was a “station”?',
+    questionSimple: 'In the secret code, what was a “station”?',
     choices: [
       { id: 'a', text: 'A guide who led people north' },
       { id: 'b', text: 'A safe house where escapees could rest and hide' },
@@ -83,6 +89,8 @@ export const MYSTERIES = [
     reward: 30,
     brief:
       'Early traffic signals had only “stop” and “go” — and deadly accidents in between. An inventor witnessed a collision and set out to fix it. Who was it?',
+    briefSimple:
+      'Long ago, traffic lights only said “stop” and “go,” and crashes kept happening. One inventor fixed it. Who was he?',
     clues: [
       'The inventor also created an early gas mask (safety hood) used by firefighters and in World War I.',
       'After witnessing a crash between a car and a carriage, he designed a signal with a third, warning position.',
@@ -96,6 +104,7 @@ export const MYSTERIES = [
       },
     ],
     question: 'Who patented the three-position traffic signal in 1923?',
+    questionSimple: 'Who invented the three-light traffic signal?',
     choices: [
       { id: 'a', text: 'Lewis Latimer' },
       { id: 'b', text: 'Granville Woods' },

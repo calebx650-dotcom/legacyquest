@@ -14,14 +14,43 @@ import { analytics } from '../game/analytics.js'
 import { ACHIEVEMENTS } from '../data/achievements.js'
 import { ALL_QUESTS } from '../data/quests.js'
 import { achievementCtx, getLevel } from '../game/selectors.js'
+import { allCollectibles } from '../content/store.js'
+import { RARITY } from '../data/collectibles.js'
 
 let toastSeq = 0
+
+// Lightweight CSS confetti burst. Pieces are plain divs animated with CSS;
+// reduced-motion settings collapse the animation automatically.
+function Confetti({ count = 36 }) {
+  const colors = ['#f6d47c', '#e9b949', '#8b5cf6', '#2ea36b', '#e05a3b', '#fff']
+  return (
+    <div className="confetti" aria-hidden>
+      {Array.from({ length: count }).map((_, i) => (
+        <span
+          key={i}
+          className="confetti-piece"
+          style={{
+            left: `${(i * 97) % 100}%`,
+            background: colors[i % colors.length],
+            animationDelay: `${(i % 12) * 0.09}s`,
+            animationDuration: `${2 + ((i * 7) % 10) / 8}s`,
+            transform: `rotate(${(i * 53) % 360}deg)`,
+          }}
+        />
+      ))}
+    </div>
+  )
+}
 
 export default function GameSystems() {
   const { state, dispatch } = useGame()
   const location = useLocation()
   const [toasts, setToasts] = useState([])
+  const [reveal, setReveal] = useState(null) // artifact being celebrated
+  const [levelBurst, setLevelBurst] = useState(false)
   const levelRef = useRef(getLevel(state))
+  const collectiblesRef = useRef(state.collectibles)
+  const onboardedRef = useRef(state.onboarded)
   const firstRun = useRef(true)
 
   // Track screen visits for the analytics dashboard.
@@ -66,16 +95,36 @@ export default function GameSystems() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.counters, dispatch, pushToast])
 
-  // --- Level ups ---
+  // --- Level ups (with confetti burst) ---
   useEffect(() => {
     const lvl = getLevel(state)
     if (!firstRun.current && lvl > levelRef.current) {
       audio.play('levelup')
       pushToast({ icon: '⭐', title: 'Level up!', body: `You reached Level ${lvl}` })
+      setLevelBurst(true)
+      setTimeout(() => setLevelBurst(false), 2600)
     }
     levelRef.current = lvl
     firstRun.current = false
   }, [state, pushToast])
+
+  // --- Artifact reveal: a full-screen celebration when something new is
+  // recovered. Skipped for the onboarding artifact (the outro already
+  // celebrates it) and suppressed under reduced motion? No — the moment stays,
+  // only the animations calm down via CSS.
+  useEffect(() => {
+    const prev = collectiblesRef.current
+    const wasOnboarding = !onboardedRef.current && state.onboarded
+    const added = state.collectibles.filter((id) => !prev.includes(id))
+    collectiblesRef.current = state.collectibles
+    onboardedRef.current = state.onboarded
+    if (added.length === 0 || wasOnboarding) return
+    const artifact = allCollectibles()[added[0]]
+    if (artifact) {
+      audio.play('unlock')
+      setReveal(artifact)
+    }
+  }, [state.collectibles, state.onboarded])
 
   // --- Accessibility settings → document root ---
   useEffect(() => {
@@ -85,8 +134,9 @@ export default function GameSystems() {
     root.dataset.contrast = s.contrast ? 'on' : 'off'
     root.dataset.colorblind = s.colorblind ? 'on' : 'off'
     root.dataset.motion = s.reducedMotion ? 'reduced' : 'full'
+    root.dataset.kids = state.difficulty === 'explorer' ? 'on' : 'off'
     root.style.setProperty('--text-scale', String(s.textScale))
-  }, [state.settings])
+  }, [state.settings, state.difficulty])
 
   // --- Audio engine sync ---
   useEffect(() => {
@@ -94,19 +144,49 @@ export default function GameSystems() {
     audio.setMusicEnabled(state.settings.music)
   }, [state.settings.sfx, state.settings.music])
 
+  const revealRarity = reveal ? RARITY[reveal.rarity] || RARITY.common : null
+
   return (
-    <div className="toast-stack" aria-live="polite">
-      {toasts.map((t) => (
-        <div key={t.id} className="toast">
-          <span className="toast-icon" aria-hidden>
-            {t.icon}
-          </span>
-          <div>
-            <div className="toast-title">{t.title}</div>
-            <div className="toast-body">{t.body}</div>
+    <>
+      <div className="toast-stack" aria-live="polite">
+        {toasts.map((t) => (
+          <div key={t.id} className="toast">
+            <span className="toast-icon" aria-hidden>
+              {t.icon}
+            </span>
+            <div>
+              <div className="toast-title">{t.title}</div>
+              <div className="toast-body">{t.body}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {levelBurst && <Confetti />}
+
+      {reveal && (
+        <div className="reveal-scrim" onClick={() => setReveal(null)}>
+          <Confetti count={48} />
+          <div
+            className="reveal-card"
+            style={{ '--rarity': revealRarity.color }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <span className="reveal-kicker">Artifact recovered!</span>
+            <span className="reveal-icon" aria-hidden>
+              {reveal.icon}
+            </span>
+            <span className="reveal-rarity" style={{ color: revealRarity.color }}>
+              {revealRarity.label} · {reveal.category}
+            </span>
+            <h2>{reveal.name}</h2>
+            <p>{reveal.blurb}</p>
+            <button className="btn btn-primary" onClick={() => setReveal(null)}>
+              Add to my museum →
+            </button>
           </div>
         </div>
-      ))}
-    </div>
+      )}
+    </>
   )
 }
