@@ -4124,3 +4124,27 @@ body {
 .pill .lq-icon {
   margin-right: 2px;
 }
+
+/* Era cards: real period photograph banner (hidden when unavailable) */
+.era-art {
+  margin: -22px -22px 16px;
+  height: 150px;
+  overflow: hidden;
+  border-radius: var(--radius) var(--radius) 0 0;
+  border-bottom: 1px solid var(--line);
+  position: relative;
+}
+.era-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 25%;
+  filter: sepia(0.25) contrast(1.03) brightness(0.92);
+}
+.era-art::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(11, 10, 16, 0.75));
+  pointer-events: none;
+}

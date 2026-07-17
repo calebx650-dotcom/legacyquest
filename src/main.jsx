@@ -29,8 +29,17 @@ requestAnimationFrame(() => {
 })
 
 // Register the service worker for offline play (production only, so it doesn't
-// interfere with the dev server's hot reload).
+// interfere with the dev server's hot reload). When an updated worker takes
+// over an already-controlled page (i.e., a new deploy), reload once so users
+// stuck on a stale cached build self-heal automatically.
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  const hadController = !!navigator.serviceWorker.controller
+  let reloaded = false
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadController || reloaded) return
+    reloaded = true
+    window.location.reload()
+  })
   window.addEventListener('load', () => {
     navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`).catch(() => {
       /* offline support is a progressive enhancement; ignore failures */

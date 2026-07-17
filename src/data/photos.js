@@ -35,6 +35,34 @@ export const PHOTOS = {
     alt: 'Photographic portrait of Ida B. Wells, circa 1893',
     credit: 'Mary Garrity, c. 1893 — public domain',
   },
+
+  // Era artwork — real period photographs shown on era cards. Any that fail to
+  // load simply hide, leaving the standard card design.
+  'era-reconstruction': {
+    file: 'Hiram Rhodes Revels - Brady-Handy.jpg',
+    alt: 'Portrait of Senator Hiram Revels, the first Black U.S. Senator',
+    credit: 'Brady-Handy studio — public domain (Library of Congress)',
+  },
+  'era-harlem-renaissance': {
+    file: 'Duke Ellington - publicity.JPG',
+    alt: 'Publicity photograph of Duke Ellington',
+    credit: 'Publicity photograph — public domain',
+  },
+  'era-wwii': {
+    file: 'Tuskegee airmen 2.jpg',
+    alt: 'Tuskegee Airmen during World War II',
+    credit: 'U.S. Army Air Forces — public domain',
+  },
+  'era-civil-rights': {
+    file: 'Civil Rights March on Washington, D.C. (Aerial view of Washington Monument showing marchers) - NARA - 542045.jpg',
+    alt: 'Aerial view of the 1963 March on Washington',
+    credit: 'U.S. Information Agency — public domain (National Archives)',
+  },
+  'era-space-age': {
+    file: 'Katherine Johnson at NASA, in 1966.jpg',
+    alt: 'Katherine Johnson at her desk at NASA in 1966',
+    credit: 'NASA, 1966 — public domain',
+  },
 }
 
 export function photoUrl(id) {

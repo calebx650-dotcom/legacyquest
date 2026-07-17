@@ -1,8 +1,29 @@
+import { useState } from 'react'
 import { useGame } from '../state/GameContext.jsx'
 import { PageHeader, Pill } from '../components/ui.jsx'
 import { audio } from '../audio/engine.js'
 import { allEras } from '../content/store.js'
 import { Icon } from '../components/icons.jsx'
+import { photoUrl, photoAlt, photoCredit } from '../data/photos.js'
+
+// Real period photograph banner for an era card. Hides itself entirely if the
+// image cannot load (offline or blocked), leaving the standard card design.
+function EraArt({ eraId }) {
+  const [failed, setFailed] = useState(false)
+  const src = photoUrl(`era-${eraId}`)
+  if (!src || failed) return null
+  return (
+    <div className="era-art">
+      <img
+        src={src}
+        alt={photoAlt(`era-${eraId}`)}
+        title={photoCredit(`era-${eraId}`)}
+        loading="lazy"
+        onError={() => setFailed(true)}
+      />
+    </div>
+  )
+}
 
 export default function Eras() {
   const { state, dispatch } = useGame()
@@ -32,6 +53,7 @@ export default function Eras() {
               className={`era-card ${unlocked ? 'era-unlocked' : 'era-locked'}`}
               style={{ '--accent': era.accent }}
             >
+              <EraArt eraId={era.id} />
               <div className="era-top">
                 <div>
                   <h3>{era.name}</h3>
