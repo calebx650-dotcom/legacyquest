@@ -8,6 +8,7 @@ import { audio } from '../audio/engine.js'
 import { ONBOARDING } from '../data/onboarding.js'
 import { COLLECTIBLES } from '../data/collectibles.js'
 import ComicPanel from './ComicPanel.jsx'
+import { Icon, GameIcon } from './icons.jsx'
 
 const STEP = { INTRO: 'intro', MISSION: 'mission', OUTRO: 'outro' }
 
@@ -50,7 +51,10 @@ export default function Onboarding() {
     <div className="onboarding">
       <div className="onboarding-inner">
         <div className="onboarding-brand">
-          <span className="brand-mark">🔥</span> LegacyQuest
+          <span className="brand-mark">
+            <Icon name="flame" size={22} />
+          </span>{' '}
+          LegacyQuest
         </div>
 
         {step === STEP.INTRO && (
@@ -128,7 +132,9 @@ export default function Onboarding() {
         {step === STEP.OUTRO && (
           <div className="comic-panel anim-rise" style={{ '--accent': ONBOARDING.outro.accent }}>
             <div className="comic-art" aria-hidden>
-              <span className="comic-emoji reward-pop">{ONBOARDING.outro.art}</span>
+              <span className="comic-emoji comic-glyph reward-pop">
+                <GameIcon glyph={ONBOARDING.outro.art} size={84} />
+              </span>
             </div>
             <div className="comic-body">
               <span className="comic-speaker">{ONBOARDING.outro.speaker}</span>
@@ -136,7 +142,9 @@ export default function Onboarding() {
               <p className="comic-text">{ONBOARDING.outro.text}</p>
 
               <div className="reward-card">
-                <span className="reward-card-icon">{artifact.icon}</span>
+                <span className="reward-card-icon">
+                  <GameIcon glyph={artifact.icon} size={32} />
+                </span>
                 <div>
                   <div className="reward-card-name">{artifact.name}</div>
                   <div className="reward-card-meta">

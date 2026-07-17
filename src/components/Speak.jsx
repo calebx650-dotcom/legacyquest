@@ -4,6 +4,7 @@
 
 import { useGame } from '../state/GameContext.jsx'
 import { isKidsMode } from '../game/kids.js'
+import { Icon } from './icons.jsx'
 
 export default function Speak({ text, label = 'Read aloud' }) {
   const { state } = useGame()
@@ -24,7 +25,7 @@ export default function Speak({ text, label = 'Read aloud' }) {
 
   return (
     <button className="speak-btn" onClick={speak} title={label} aria-label={label}>
-      🔊
+      <Icon name="speaker" size={13} />
     </button>
   )
 }

@@ -2,6 +2,7 @@ import { useGame } from '../state/GameContext.jsx'
 import { PageHeader, Pill } from '../components/ui.jsx'
 import { audio } from '../audio/engine.js'
 import { allEras } from '../content/store.js'
+import { Icon } from '../components/icons.jsx'
 
 export default function Eras() {
   const { state, dispatch } = useGame()
@@ -39,7 +40,7 @@ export default function Eras() {
                 {unlocked ? (
                   <Pill tone="good">Restored</Pill>
                 ) : (
-                  <Pill tone="lock">🔒 {era.unlockCost} pts</Pill>
+                  <Pill tone="lock"><Icon name="lock" size={12} /> {era.unlockCost} pts</Pill>
                 )}
               </div>
               <p className="era-tagline">{era.tagline}</p>

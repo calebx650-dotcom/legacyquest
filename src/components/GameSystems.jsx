@@ -16,6 +16,7 @@ import { ALL_QUESTS } from '../data/quests.js'
 import { achievementCtx, getLevel } from '../game/selectors.js'
 import { allCollectibles } from '../content/store.js'
 import { RARITY } from '../data/collectibles.js'
+import { GameIcon } from './icons.jsx'
 
 let toastSeq = 0
 
@@ -152,7 +153,7 @@ export default function GameSystems() {
         {toasts.map((t) => (
           <div key={t.id} className="toast">
             <span className="toast-icon" aria-hidden>
-              {t.icon}
+              <GameIcon glyph={t.icon} size={26} />
             </span>
             <div>
               <div className="toast-title">{t.title}</div>
@@ -174,7 +175,7 @@ export default function GameSystems() {
           >
             <span className="reveal-kicker">Artifact recovered!</span>
             <span className="reveal-icon" aria-hidden>
-              {reveal.icon}
+              <GameIcon glyph={reveal.icon} size={68} />
             </span>
             <span className="reveal-rarity" style={{ color: revealRarity.color }}>
               {revealRarity.label} · {reveal.category}

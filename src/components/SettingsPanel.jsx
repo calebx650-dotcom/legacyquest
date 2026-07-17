@@ -3,6 +3,7 @@
 import { useGame } from '../state/GameContext.jsx'
 import { audio } from '../audio/engine.js'
 import { DIFFICULTIES } from '../game/progression.js'
+import { GameIcon } from './icons.jsx'
 
 function Toggle({ label, hint, checked, onChange }) {
   return (
@@ -36,7 +37,7 @@ export default function SettingsPanel({ open, onClose }) {
         <div className="drawer-head">
           <h2>Settings</h2>
           <button className="modal-close" onClick={onClose} aria-label="Close">
-            ✕
+            ×
           </button>
         </div>
 
@@ -48,7 +49,7 @@ export default function SettingsPanel({ open, onClose }) {
               className={`diff-chip ${state.difficulty === d.id ? 'active' : ''}`}
               onClick={() => dispatch({ type: 'SET_DIFFICULTY', id: d.id })}
             >
-              <span className="diff-icon">{d.icon}</span>
+              <span className="diff-icon"><GameIcon glyph={d.icon} size={22} /></span>
               <span className="diff-name">{d.name}</span>
               <span className="diff-aud">{d.audience}</span>
             </button>
@@ -76,7 +77,7 @@ export default function SettingsPanel({ open, onClose }) {
         <h3 className="drawer-label">Accessibility</h3>
         <Toggle
           label="Read aloud (text-to-speech)"
-          hint="Show 🔊 buttons on stories"
+          hint="Show read-aloud buttons on stories"
           checked={s.tts}
           onChange={(v) => set({ tts: v })}
         />
@@ -150,7 +151,7 @@ export default function SettingsPanel({ open, onClose }) {
 
         <h3 className="drawer-label">About</h3>
         <div className="about-block">
-          <div className="about-name">🔥 LegacyQuest</div>
+          <div className="about-name">LegacyQuest</div>
           <div className="about-version">Version 1.0 · playable prototype</div>
           <p>
             Don’t just learn Black history — live it. The framing story is fiction; every name,

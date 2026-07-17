@@ -1,10 +1,12 @@
 // Small presentational helpers shared across views.
 
+import { Icon, GameIcon } from './icons.jsx'
+
 export function PageHeader({ icon, title, subtitle }) {
   return (
     <div className="page-header">
       <div className="page-icon" aria-hidden>
-        {icon}
+        <GameIcon glyph={icon} size={30} />
       </div>
       <div>
         <h1 className="page-title">{title}</h1>
@@ -17,7 +19,9 @@ export function PageHeader({ icon, title, subtitle }) {
 export function Reward({ points, children }) {
   return (
     <div className="reward" role="status">
-      <span className="reward-star">✦</span>
+      <span className="reward-star">
+        <Icon name="star" size={18} />
+      </span>
       <span>
         {children} <strong>+{points} Legacy Points</strong>
       </span>

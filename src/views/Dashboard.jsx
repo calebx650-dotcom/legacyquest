@@ -13,6 +13,7 @@ import { TITLES } from '../data/titles.js'
 import { featuredForDate, featuredId } from '../data/thisday.js'
 import { activeEvents } from '../data/events.js'
 import { getLevelInfo } from '../game/selectors.js'
+import { Icon, GameIcon } from '../components/icons.jsx'
 
 export default function Dashboard() {
   const { state, dispatch } = useGame()
@@ -65,7 +66,9 @@ export default function Dashboard() {
     <div className="view">
       {events.length > 0 && (
         <div className="event-banner">
-          <span className="event-banner-icon">{events[0].icon}</span>
+          <span className="event-banner-icon">
+            <GameIcon glyph={events[0].icon} size={22} />
+          </span>
           <span>
             <strong>{events[0].name} is live!</strong> {events[0].blurb}
           </span>
@@ -77,7 +80,9 @@ export default function Dashboard() {
 
       {streak > 0 && !dailyDone && (
         <div className="reminder-banner">
-          <span>🔥</span>
+          <span>
+            <Icon name="flame" size={20} />
+          </span>
           <span>
             You have a <strong>{streak}-day streak</strong> — don’t break it! Today’s Daily Legacy is
             waiting.
@@ -163,7 +168,11 @@ export default function Dashboard() {
         style={{ '--rarity': artRarity.color }}
       >
         <div className="featured-artifact-icon" aria-hidden>
-          {ownsFeatured ? artifactOfDay.icon : '❔'}
+          {ownsFeatured ? (
+            <GameIcon glyph={artifactOfDay.icon} size={40} />
+          ) : (
+            <Icon name="question" size={40} />
+          )}
         </div>
         <div>
           <span className="kicker">Featured artifact of the day</span>
@@ -223,28 +232,28 @@ export default function Dashboard() {
       <div className="grid grid-two">
         {nextMystery ? (
           <Link to="/mysteries" className="mission-card">
-            <span className="mission-kind">🕵️ History Mystery</span>
+            <span className="mission-kind"><Icon name="search" size={13} /> History Mystery</span>
             <h4>{nextMystery.title}</h4>
             <p>{nextMystery.brief}</p>
             <span className="mission-reward">Reward: +{nextMystery.reward} pts</span>
           </Link>
         ) : (
           <div className="mission-card mission-done">
-            <span className="mission-kind">🕵️ History Mysteries</span>
+            <span className="mission-kind"><Icon name="search" size={13} /> History Mysteries</span>
             <h4>All mysteries solved!</h4>
             <p>You’ve restored every investigation currently in the timeline. More eras await.</p>
           </div>
         )}
         {nextPuzzle ? (
           <Link to="/puzzles" className="mission-card">
-            <span className="mission-kind">🧩 Puzzle Lab</span>
+            <span className="mission-kind"><Icon name="puzzle" size={13} /> Puzzle Lab</span>
             <h4>{nextPuzzle.title}</h4>
             <p>{nextPuzzle.instructions}</p>
             <span className="mission-reward">Reward: +{nextPuzzle.reward} pts</span>
           </Link>
         ) : (
           <div className="mission-card mission-done">
-            <span className="mission-kind">🧩 Puzzle Lab</span>
+            <span className="mission-kind"><Icon name="puzzle" size={13} /> Puzzle Lab</span>
             <h4>Every puzzle cleared!</h4>
             <p>Sharp work, Keeper. Check the Museum to admire what you’ve recovered.</p>
           </div>

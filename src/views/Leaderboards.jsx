@@ -6,6 +6,7 @@ import { useGame } from '../state/GameContext.jsx'
 import { PageHeader, Pill } from '../components/ui.jsx'
 import { getLevel } from '../game/selectors.js'
 import { weekKey } from '../data/quests.js'
+import { Icon } from '../components/icons.jsx'
 
 const SAMPLE = [
   { name: 'Zora W.', xp: 1420 },
@@ -127,7 +128,7 @@ export default function Leaderboards() {
                 <li key={r.name} className={`board-row ${r.you ? 'you' : ''}`}>
                   <span className="board-rank">{i + 1}</span>
                   <span className="board-name">{r.name}</span>
-                  <span className="board-xp">{r.n} 🏺</span>
+                  <span className="board-xp">{r.n} <Icon name="vase" size={13} /></span>
                 </li>
               ))}
           </ol>

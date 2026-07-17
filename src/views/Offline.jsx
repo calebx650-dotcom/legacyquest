@@ -40,7 +40,7 @@ export default function Offline() {
         <div className="offline-row">
           <span>Offline mode</span>
           <Pill tone={swReady ? 'good' : 'lock'}>
-            {swReady ? 'Ready ✓' : 'Enables after first full load'}
+            {swReady ? 'Ready' : 'Enables after first full load'}
           </Pill>
         </div>
         <p className="muted small">
@@ -55,7 +55,7 @@ export default function Offline() {
           <article key={e.id} className="pack-card" style={{ '--accent': e.accent }}>
             <h3>{e.name}</h3>
             <span className="pack-years">{e.years}</span>
-            <Pill tone="good">Available offline ✓</Pill>
+            <Pill tone="good">Available offline</Pill>
           </article>
         ))}
       </div>

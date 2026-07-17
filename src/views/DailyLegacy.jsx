@@ -7,6 +7,7 @@ import { analytics } from '../game/analytics.js'
 import { allDailyQuestions } from '../content/store.js'
 import { STREAK_MILESTONES } from '../data/collectibles.js'
 import { kidText } from '../game/kids.js'
+import { Icon } from '../components/icons.jsx'
 
 // Local YYYY-MM-DD (avoids UTC off-by-one across time zones).
 function ymd(date) {
@@ -95,7 +96,7 @@ export default function DailyLegacy() {
       />
 
       <div className="streak-banner">
-        <span className="flame">🔥</span>
+        <span className="flame"><Icon name="flame" size={26} /></span>
         <div>
           <strong>{state.daily.streak}-day streak</strong>
           <span className="muted">
@@ -111,6 +112,7 @@ export default function DailyLegacy() {
               className={`streak-node ${state.daily.streak >= m.days ? 'hit' : ''}`}
               title={`${m.label} streak reward`}
             >
+              <Icon name="flame" size={20} className="streak-flame" />
               {m.days}
             </span>
           ))}
@@ -164,7 +166,7 @@ export default function DailyLegacy() {
                 disabled={hintUsed || state.legacyPoints < HINT_COST}
                 title={`Removes two wrong answers (−${HINT_COST} pts)`}
               >
-                💡 {hintUsed ? 'Hint used' : `Hint (−${HINT_COST} pts)`}
+                <Icon name="bulb" size={14} /> {hintUsed ? 'Hint used' : `Hint (−${HINT_COST} pts)`}
               </button>
               {missed && (
                 <p className="retry-note">

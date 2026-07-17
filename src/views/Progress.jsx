@@ -4,6 +4,7 @@ import { getLevelInfo, achievementCtx } from '../game/selectors.js'
 import { ACHIEVEMENTS } from '../data/achievements.js'
 import { TITLES, earnedTitles } from '../data/titles.js'
 import { MENTORS } from '../data/mentors.js'
+import { Icon, GameIcon } from '../components/icons.jsx'
 
 export default function Progress() {
   const { state, dispatch } = useGame()
@@ -92,7 +93,7 @@ export default function Progress() {
           const progressable = a.req(state, ctx)
           return (
             <div key={a.id} className={`badge-card ${has ? 'has' : 'locked'}`}>
-              <div className="badge-icon">{has ? a.icon : '🔒'}</div>
+              <div className="badge-icon">{has ? <GameIcon glyph={a.icon} size={28} /> : <Icon name="lock" size={24} />}</div>
               <div className="badge-body">
                 <div className="badge-name">{a.name}</div>
                 <div className="badge-desc">{a.desc}</div>

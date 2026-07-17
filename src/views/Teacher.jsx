@@ -8,6 +8,7 @@ import { PageHeader, Pill } from '../components/ui.jsx'
 import { MYSTERIES } from '../data/mysteries.js'
 import { ERAS } from '../data/eras.js'
 import { getLevel } from '../game/selectors.js'
+import { Icon } from '../components/icons.jsx'
 
 // Sample roster so the dashboards have something to show. Clearly a demo.
 const SAMPLE_CLASS = [
@@ -100,7 +101,7 @@ export default function Teacher() {
                 <td>{r.level}</td>
                 <td>{r.mysteries}</td>
                 <td>{r.eras}</td>
-                <td>{r.streak}🔥</td>
+                <td>{r.streak}</td>
               </tr>
             ))}
           </tbody>
@@ -114,7 +115,7 @@ export default function Teacher() {
           return (
             <div key={m.id} className="quiz-report-row">
               <span>{m.title}</span>
-              {solved ? <Pill tone="good">Correct ✓</Pill> : <Pill tone="lock">Not attempted</Pill>}
+              {solved ? <Pill tone="good">Correct</Pill> : <Pill tone="lock">Not attempted</Pill>}
             </div>
           )
         })}
@@ -184,7 +185,7 @@ export default function Teacher() {
           ))}
         </select>
         <button className="btn btn-primary" onClick={() => window.print()}>
-          🖨️ Print worksheet
+          <Icon name="print" size={14} /> Print worksheet
         </button>
       </div>
 

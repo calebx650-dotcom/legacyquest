@@ -9,6 +9,7 @@ import { ERAS } from '../data/eras.js'
 import { COLLECTIBLES } from '../data/collectibles.js'
 import { DIFFICULTIES } from '../game/progression.js'
 import { kidText } from '../game/kids.js'
+import { Icon } from '../components/icons.jsx'
 
 const eraName = (id) => ERAS.find((e) => e.id === id)?.name ?? id
 
@@ -38,7 +39,7 @@ export default function Mysteries() {
             <article key={m.id} className={`case-card ${solved ? 'solved' : ''}`}>
               <div className="case-top">
                 <Pill tone="lock">{eraName(m.era)}</Pill>
-                {solved ? <Pill tone="good">Solved ✓</Pill> : <Pill tone="accent">Open case</Pill>}
+                {solved ? <Pill tone="good">Solved</Pill> : <Pill tone="accent">Open case</Pill>}
               </div>
               <h3>{m.title}</h3>
               <p className="case-brief">{m.brief}</p>
@@ -56,7 +57,7 @@ export default function Mysteries() {
           <div className="grid grid-two">
             {locked.map((m) => (
               <article key={m.id} className="case-card case-sealed">
-                <Pill tone="lock">🔒 {eraName(m.era)}</Pill>
+                <Pill tone="lock"><Icon name="lock" size={12} /> {eraName(m.era)}</Pill>
                 <h3>{m.title}</h3>
                 <p className="muted">Restore {eraName(m.era)} to unseal this investigation.</p>
               </article>
@@ -116,7 +117,7 @@ function MysteryModal({ mystery, onClose }) {
     <div className="modal-scrim" onClick={onClose}>
       <div className="modal case-modal" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose} aria-label="Close">
-          ✕
+          ×
         </button>
         <h2>{mystery.title}</h2>
         <p className="case-brief">
@@ -124,7 +125,7 @@ function MysteryModal({ mystery, onClose }) {
           <Speak text={`${mystery.title}. ${kidText(state, mystery.brief, mystery.briefSimple)}`} />
         </p>
 
-        <h4 className="block-label">🔎 Evidence</h4>
+        <h4 className="block-label"><Icon name="search" size={13} /> Evidence</h4>
         <ol className="clue-list">
           {mystery.clues.map((clue, i) => (
             <li key={i} className={i < revealed ? 'clue-shown' : 'clue-hidden'}>
@@ -138,7 +139,7 @@ function MysteryModal({ mystery, onClose }) {
           </button>
         )}
 
-        <h4 className="block-label">🗣️ Interviews</h4>
+        <h4 className="block-label"><Icon name="mic" size={13} /> Interviews</h4>
         <div className="interviews">
           {mystery.interviews.map((iv, i) => (
             <blockquote key={i} className="interview">
@@ -148,7 +149,7 @@ function MysteryModal({ mystery, onClose }) {
           ))}
         </div>
 
-        <h4 className="block-label">⚖️ Your verdict</h4>
+        <h4 className="block-label"><Icon name="medal" size={13} /> Your verdict</h4>
         <p className="case-question">{kidText(state, mystery.question, mystery.questionSimple)}</p>
         <div className="option-grid">
           {mystery.choices.map((c) => {

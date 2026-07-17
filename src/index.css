@@ -3673,17 +3673,15 @@ body {
   font-size: 11px;
   color: var(--muted);
 }
-.streak-track .streak-node::before {
-  content: '🔥';
-  font-size: 22px;
-  filter: grayscale(1) opacity(0.35);
+.streak-track .streak-node .streak-flame {
+  color: var(--line);
 }
 .streak-track .streak-node.hit {
   color: var(--gold);
   background: none;
 }
-.streak-track .streak-node.hit::before {
-  filter: none;
+.streak-track .streak-node.hit .streak-flame {
+  color: var(--gold);
 }
 
 /* Museum rarity counters (reference #16) */
@@ -4046,4 +4044,83 @@ body {
   .memory-grid {
     grid-template-columns: repeat(3, 1fr);
   }
+}
+
+
+/* ============================================================
+   ICON SYSTEM — inline SVG icons replace all emoji UI art.
+   ============================================================ */
+.lq-icon {
+  vertical-align: -0.18em;
+  flex-shrink: 0;
+}
+.chip-icon .lq-icon,
+.reward-star .lq-icon {
+  vertical-align: -0.12em;
+}
+.nav-icon,
+.tab-icon,
+.page-icon,
+.toast-icon,
+.reveal-icon,
+.build-icon,
+.event-icon,
+.relic-icon,
+.featured-artifact-icon,
+.hunt-found-icon,
+.memory-front,
+.memory-icon,
+.reward-card-icon,
+.face-emoji {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.page-icon {
+  color: var(--gold);
+}
+.relic-icon,
+.build-icon {
+  color: var(--gold);
+}
+.reveal-icon {
+  color: var(--rarity, var(--gold));
+}
+.featured-artifact-icon {
+  color: var(--rarity, var(--gold));
+}
+.toast-icon {
+  color: var(--gold);
+}
+.event-icon,
+.hunt-found-icon {
+  color: var(--gold);
+}
+.memory-front {
+  color: var(--gold-deep);
+}
+.memory-icon {
+  color: var(--gold);
+}
+.streak-banner .flame {
+  color: var(--gold);
+  display: inline-flex;
+}
+.brand-mark {
+  color: var(--gold);
+  display: inline-flex;
+}
+.reward-card-icon {
+  color: var(--gold);
+}
+/* Comic panels: large tinted glyph replaces scene emoji */
+.comic-glyph {
+  color: var(--accent, var(--gold));
+  filter: drop-shadow(0 6px 20px rgba(0, 0, 0, 0.5));
+}
+.mission-kind .lq-icon,
+.block-label .lq-icon,
+.clip-note .lq-icon,
+.pill .lq-icon {
+  margin-right: 2px;
 }

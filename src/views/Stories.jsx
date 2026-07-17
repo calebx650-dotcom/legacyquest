@@ -4,6 +4,7 @@ import { PageHeader, Pill, Reward } from '../components/ui.jsx'
 import { audio } from '../audio/engine.js'
 import { STORIES } from '../data/stories.js'
 import { allEras, allCollectibles } from '../content/store.js'
+import { Icon } from '../components/icons.jsx'
 
 const eraName = (id) => allEras().find((e) => e.id === id)?.name ?? id
 
@@ -26,7 +27,7 @@ export default function Stories() {
             <article key={s.id} className={`story-card ${done ? 'done' : ''}`}>
               <div className="case-top">
                 <Pill tone="lock">{eraName(s.era)}</Pill>
-                {done ? <Pill tone="good">Completed ✓</Pill> : <Pill tone="accent">2–5 min</Pill>}
+                {done ? <Pill tone="good">Completed</Pill> : <Pill tone="accent">2–5 min</Pill>}
               </div>
               <h3>{s.title}</h3>
               <p className="case-brief">{s.blurb}</p>
@@ -87,7 +88,7 @@ function StoryPlayer({ story, onClose }) {
     <div className="modal-scrim" onClick={onClose}>
       <div className="modal story-modal" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose} aria-label="Close">
-          ✕
+          ×
         </button>
         <div className="story-head">
           <h2>{story.title}</h2>
@@ -96,7 +97,7 @@ function StoryPlayer({ story, onClose }) {
               className={`btn narrate-btn ${narrate ? 'on' : ''}`}
               onClick={() => setNarrate((v) => !v)}
             >
-              🔊 {narrate ? 'Narration on' : 'Narrate'}
+              <Icon name="speaker" size={14} /> {narrate ? 'Narration on' : 'Narrate'}
             </button>
           )}
         </div>

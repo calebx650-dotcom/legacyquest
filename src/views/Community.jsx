@@ -2,6 +2,7 @@ import { useGame } from '../state/GameContext.jsx'
 import { PageHeader, Pill } from '../components/ui.jsx'
 import { audio } from '../audio/engine.js'
 import { COMMUNITY } from '../data/community.js'
+import { Icon, GameIcon } from '../components/icons.jsx'
 
 // Madam C. J. Walker's "Enterprise" ability discounts construction by 15%.
 const WALKER = 'madam-cj-walker'
@@ -41,7 +42,7 @@ export default function Community() {
 
       {hasWalker && (
         <p className="ability-active">
-          ⚡ Madam C. J. Walker’s <strong>Enterprise</strong> ability is active — construction costs
+          <Icon name="bolt" size={14} /> Madam C. J. Walker’s <strong>Enterprise</strong> ability is active — construction costs
           reduced 15%.
         </p>
       )}
@@ -54,12 +55,12 @@ export default function Community() {
           return (
             <article key={b.id} className={`build-card ${isBuilt ? 'built' : ''}`}>
               <div className="build-icon" aria-hidden>
-                {b.icon}
+                <GameIcon glyph={b.icon} size={36} />
               </div>
               <h3>{b.name}</h3>
               {isBuilt ? (
                 <>
-                  <Pill tone="good">Standing ✓</Pill>
+                  <Pill tone="good">Standing</Pill>
                   <p className="build-story">{b.story}</p>
                 </>
               ) : (

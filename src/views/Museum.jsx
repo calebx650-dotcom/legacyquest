@@ -3,6 +3,7 @@ import { useGame } from '../state/GameContext.jsx'
 import { PageHeader } from '../components/ui.jsx'
 import { RARITY, RARITY_ORDER } from '../data/collectibles.js'
 import { allCollectibles, allEras } from '../content/store.js'
+import { Icon, GameIcon } from '../components/icons.jsx'
 
 export default function Museum() {
   const { state } = useGame()
@@ -97,7 +98,7 @@ export default function Museum() {
                     role={has ? 'button' : undefined}
                   >
                     <div className="relic-icon" aria-hidden>
-                      {has ? c.icon : '❔'}
+                      {has ? <GameIcon glyph={c.icon} size={38} /> : <Icon name="question" size={38} />}
                     </div>
                     <span className="relic-rarity" style={{ color: rar.color }}>
                       {rar.label}
@@ -186,7 +187,7 @@ function ArtifactModal({ artifact, owned, onOpen, onClose }) {
         onPointerLeave={endDrag}
       >
         <button className="modal-close" onClick={onClose} aria-label="Close">
-          ✕
+          ×
         </button>
 
         <div className="artifact-viewer">
@@ -200,7 +201,7 @@ function ArtifactModal({ artifact, owned, onOpen, onClose }) {
             >
               {['front', 'back', 'right', 'left', 'top', 'bottom'].map((face) => (
                 <div key={face} className={`face face-${face}`}>
-                  <span className="face-emoji">{artifact.icon}</span>
+                  <span className="face-emoji"><GameIcon glyph={artifact.icon} size={48} /></span>
                 </div>
               ))}
             </div>
@@ -215,7 +216,7 @@ function ArtifactModal({ artifact, owned, onOpen, onClose }) {
           <h2>{artifact.name}</h2>
           <p>{artifact.blurb}</p>
           <button className="btn" onClick={readAloud}>
-            🔊 Audio description
+            <Icon name="speaker" size={14} /> Audio description
           </button>
 
           <h4 className="block-label">Timeline placement</h4>
@@ -247,7 +248,7 @@ function ArtifactModal({ artifact, owned, onOpen, onClose }) {
                     disabled={!has}
                     onClick={() => has && onOpen(r.id)}
                   >
-                    <span>{has ? r.icon : '❔'}</span>
+                    <span>{has ? <GameIcon glyph={r.icon} size={14} /> : <Icon name="question" size={14} />}</span>
                     {has ? r.name : 'Undiscovered'}
                   </button>
                 )

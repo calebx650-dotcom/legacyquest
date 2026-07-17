@@ -4,6 +4,7 @@ import { PageHeader, Pill, Reward } from '../components/ui.jsx'
 import { audio } from '../audio/engine.js'
 import { PUZZLES } from '../data/puzzles.js'
 import { photoUrl, photoCredit } from '../data/photos.js'
+import { Icon, GameIcon } from '../components/icons.jsx'
 
 // Fisher–Yates shuffle (returns a new array).
 function shuffle(arr) {
@@ -35,7 +36,7 @@ export default function PuzzleLab() {
             className={`puzzle-tab ${p.id === activeId ? 'is-active' : ''}`}
             onClick={() => setActiveId(p.id)}
           >
-            {state.solvedPuzzles.includes(p.id) && <span className="tick">✓</span>}
+            {state.solvedPuzzles.includes(p.id) && <span className="tick"><Icon name="check" size={12} /></span>}
             {p.title}
           </button>
         ))}
@@ -407,9 +408,9 @@ function MemoryPuzzle({ puzzle }) {
               aria-label={up ? card.label : 'Face-down card'}
             >
               <span className="memory-inner">
-                <span className="memory-front">🔥</span>
+                <span className="memory-front"><Icon name="flame" size={26} /></span>
                 <span className="memory-back">
-                  <span className="memory-icon">{card.icon}</span>
+                  <span className="memory-icon"><GameIcon glyph={card.icon} size={24} /></span>
                   <span className="memory-label">{card.label}</span>
                 </span>
               </span>

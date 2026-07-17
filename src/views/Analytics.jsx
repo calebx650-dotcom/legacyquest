@@ -64,9 +64,9 @@ export default function Analytics() {
 
       <h3 className="section-label">Retention</h3>
       <div className="retention-row">
-        <Pill tone={s.retention.d1 ? 'good' : 'lock'}>Day 1 {s.retention.d1 ? '✓' : '—'}</Pill>
-        <Pill tone={s.retention.d7 ? 'good' : 'lock'}>Day 7 {s.retention.d7 ? '✓' : '—'}</Pill>
-        <Pill tone={s.retention.d30 ? 'good' : 'lock'}>Day 30 {s.retention.d30 ? '✓' : '—'}</Pill>
+        <Pill tone={s.retention.d1 ? 'good' : 'lock'}>Day 1 {s.retention.d1 ? 'yes' : '—'}</Pill>
+        <Pill tone={s.retention.d7 ? 'good' : 'lock'}>Day 7 {s.retention.d7 ? 'yes' : '—'}</Pill>
+        <Pill tone={s.retention.d30 ? 'good' : 'lock'}>Day 30 {s.retention.d30 ? 'yes' : '—'}</Pill>
       </div>
 
       <div className="grid grid-two">

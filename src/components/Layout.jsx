@@ -9,6 +9,7 @@ import { tipFor } from '../data/companions.js'
 import { MASCOT, mascotTip } from '../data/mascot.js'
 import MascotFace from './Mascot.jsx'
 import SettingsPanel from './SettingsPanel.jsx'
+import { Icon, GameIcon } from './icons.jsx'
 
 const NAV_GROUPS = [
   {
@@ -83,7 +84,7 @@ export default function Layout({ children }) {
       <aside className={`sidebar ${open ? 'is-open' : ''}`}>
         <div className="brand">
           <span className="brand-mark" aria-hidden>
-            🔥
+            <Icon name="flame" size={30} />
           </span>
           <div>
             <div className="brand-name">LegacyQuest</div>
@@ -103,7 +104,7 @@ export default function Layout({ children }) {
                   onClick={() => setOpen(false)}
                 >
                   <span className="nav-icon" aria-hidden>
-                    {item.icon}
+                    <GameIcon glyph={item.icon} size={17} />
                   </span>
                   <span>{item.label}</span>
                 </NavLink>
@@ -125,7 +126,7 @@ export default function Layout({ children }) {
             onClick={() => setOpen((v) => !v)}
             aria-label="Toggle navigation"
           >
-            ☰
+            <Icon name="menu" size={18} />
           </button>
 
           <div className="level-badge" title={`Level ${lvl.level}`}>
@@ -140,17 +141,23 @@ export default function Layout({ children }) {
 
           <div className="stat-chips">
             <div className="chip chip-points" title="Legacy Points">
-              <span className="chip-icon">✦</span>
+              <span className="chip-icon">
+                <Icon name="star" size={14} />
+              </span>
               <span className="chip-value">{state.legacyPoints}</span>
               <span className="chip-label">Points</span>
             </div>
             <div className="chip" title="Daily streak">
-              <span className="chip-icon">🔥</span>
+              <span className="chip-icon">
+                <Icon name="flame" size={14} />
+              </span>
               <span className="chip-value">{state.daily.streak}</span>
               <span className="chip-label">Streak</span>
             </div>
             <div className="chip" title="Artifacts recovered">
-              <span className="chip-icon">🏺</span>
+              <span className="chip-icon">
+                <Icon name="vase" size={14} />
+              </span>
               <span className="chip-value">{state.collectibles.length}</span>
               <span className="chip-label">Artifacts</span>
             </div>
@@ -160,7 +167,7 @@ export default function Layout({ children }) {
               title={state.settings.music ? 'Mute music' : 'Play music'}
               aria-label="Toggle music"
             >
-              {state.settings.music ? '🔊' : '🔇'}
+              <Icon name={state.settings.music ? 'speaker' : 'speakerOff'} size={17} />
             </button>
             <button
               className="icon-btn"
@@ -168,7 +175,7 @@ export default function Layout({ children }) {
               title="Settings"
               aria-label="Open settings"
             >
-              ⚙️
+              <Icon name="gear" size={17} />
             </button>
           </div>
         </header>
@@ -195,7 +202,7 @@ export default function Layout({ children }) {
             onClick={() => setCompanionOpen(false)}
             aria-label="Dismiss companion"
           >
-            ✕
+            ×
           </button>
         </div>
       )}
@@ -215,7 +222,7 @@ export default function Layout({ children }) {
             className={({ isActive }) => `tab-item ${isActive ? 'is-active' : ''}`}
           >
             <span className="tab-icon" aria-hidden>
-              {t.icon}
+              <GameIcon glyph={t.icon} size={20} />
             </span>
             <span>{t.label}</span>
           </NavLink>

@@ -76,7 +76,7 @@ export default function Mentors() {
               </div>
 
               {unlocked ? (
-                <div className="mentor-foot recruited">✓ Recruited</div>
+                <div className="mentor-foot recruited">Recruited</div>
               ) : !eraReady ? (
                 <button className="btn" disabled>
                   Restore {eraName(m.era)} first

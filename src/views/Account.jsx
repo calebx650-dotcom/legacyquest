@@ -74,7 +74,7 @@ export default function Account() {
                   <span>G</span> Continue with Google
                 </button>
                 <button className="btn signin apple" onClick={() => signIn('apple')}>
-                  <span></span> Continue with Apple
+                  <span>A</span> Continue with Apple
                 </button>
                 <button className="btn" onClick={() => signIn('guest')}>
                   Continue as Guest
@@ -98,7 +98,7 @@ export default function Account() {
           <label className="field-label">Your sync code</label>
           <textarea className="text-input sync-box" readOnly value={syncCode} rows={4} />
           <button className="btn btn-primary" onClick={copySync}>
-            {copied ? 'Copied ✓' : 'Copy sync code'}
+            {copied ? 'Copied' : 'Copy sync code'}
           </button>
 
           <label className="field-label" style={{ marginTop: 18 }}>

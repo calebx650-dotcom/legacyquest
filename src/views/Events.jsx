@@ -4,6 +4,7 @@ import { PageHeader, Pill, Reward } from '../components/ui.jsx'
 import { audio } from '../audio/engine.js'
 import { activeEvents, hiddenArtifactOfWeek } from '../data/events.js'
 import { allCollectibles } from '../content/store.js'
+import { Icon, GameIcon } from '../components/icons.jsx'
 
 export default function Events() {
   const { state, dispatch } = useGame()
@@ -50,7 +51,7 @@ export default function Events() {
         <div className="grid grid-two">
           {events.map((e) => (
             <article key={e.id} className="event-card">
-              <div className="event-icon">{e.icon}</div>
+              <div className="event-icon"><GameIcon glyph={e.icon} size={32} /></div>
               <div>
                 <div className="event-head">
                   <h3>{e.name}</h3>
@@ -67,7 +68,7 @@ export default function Events() {
       <div className="card hunt-card">
         {found ? (
           <div className="hunt-found">
-            <span className="hunt-found-icon">{hidden.icon}</span>
+            <span className="hunt-found-icon"><GameIcon glyph={hidden.icon} size={44} /></span>
             <div>
               <h3>You found the {hidden.name}!</h3>
               <p className="muted">{hidden.blurb}</p>
@@ -91,7 +92,7 @@ export default function Events() {
                   className={`hunt-spot ${revealed === i ? 'miss' : ''}`}
                   onClick={() => search(i)}
                 >
-                  {revealed === i ? '∅' : '🔍'}
+                  {revealed === i ? '—' : <Icon name="search" size={22} />}
                 </button>
               ))}
             </div>
