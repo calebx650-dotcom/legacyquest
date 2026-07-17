@@ -1,13 +1,25 @@
-// LegacyQuest service worker — enables offline play (important for schools with
-// unreliable internet). Strategy: cache-first for same-origin GET requests, with
-// a network fallback that caches new responses as they're fetched. After the
-// first visit the whole app shell is available offline.
+// LegacyQuest service worker.
+//
+// Strategy (fixed from v1, which was cache-first on everything and pinned
+// users to the first build they ever loaded):
+//   - Navigations / HTML: network-first, falling back to cache offline. Every
+//     visit with a connection gets the newest index.html.
+//   - Other same-origin assets: stale-while-revalidate. Vite asset filenames
+//     are content-hashed, so serving cache instantly is safe while the network
+//     copy refreshes the cache in the background.
+//   - The cache name is versioned; activation deletes old caches, and
+//     skipWaiting + clients.claim let an updated worker take over immediately.
 
-const CACHE = 'legacyquest-v1'
+const CACHE = 'legacyquest-v2'
 const CORE = ['./', './index.html', './manifest.webmanifest', './favicon.svg']
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE).then((c) => c.addAll(CORE)).then(() => self.skipWaiting()))
+  event.waitUntil(
+    caches
+      .open(CACHE)
+      .then((c) => c.addAll(CORE))
+      .then(() => self.skipWaiting()),
+  )
 })
 
 self.addEventListener('activate', (event) => {
@@ -22,16 +34,34 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const { request } = event
   if (request.method !== 'GET' || new URL(request.url).origin !== self.location.origin) return
+
+  // HTML: network-first so deploys reach users on their next visit.
+  if (request.mode === 'navigate' || request.destination === 'document') {
+    event.respondWith(
+      fetch(request)
+        .then((res) => {
+          const copy = res.clone()
+          caches.open(CACHE).then((c) => c.put(request, copy))
+          return res
+        })
+        .catch(() =>
+          caches.match(request).then((hit) => hit || caches.match('./index.html')),
+        ),
+    )
+    return
+  }
+
+  // Assets: stale-while-revalidate.
   event.respondWith(
     caches.match(request).then((cached) => {
-      if (cached) return cached
-      return fetch(request)
+      const refresh = fetch(request)
         .then((res) => {
           const copy = res.clone()
           caches.open(CACHE).then((c) => c.put(request, copy))
           return res
         })
         .catch(() => cached)
+      return cached || refresh
     }),
   )
 })
