@@ -63,6 +63,34 @@ export const PHOTOS = {
     alt: 'Katherine Johnson at her desk at NASA in 1966',
     credit: 'NASA, 1966 — public domain',
   },
+  'era-ancient-africa': {
+    file: 'Sankore Moske Timbuktu.jpg',
+    alt: 'The Sankoré Mosque and center of learning in Timbuktu, Mali',
+    credit: 'Historic photograph of the Sankoré complex — public domain',
+  },
+  'era-slave-trade': {
+    file: 'Olaudah Equiano.jpg',
+    alt: 'Portrait engraving of Olaudah Equiano, from his 1789 narrative',
+    credit: 'Frontispiece portrait, 1789 — public domain',
+  },
+  // Reused portraits: both mentors are directly tied to these eras, and using
+  // an already-verified figure avoids guessing at unverified event-photo
+  // filenames for sensitive history (the Tulsa Race Massacre in particular).
+  'era-great-migration': {
+    file: 'Mary Garrity - Ida B. Wells-Barnett - Google Art Project.jpg',
+    alt: 'Photographic portrait of Ida B. Wells, circa 1893',
+    credit: 'Mary Garrity, c. 1893 — public domain',
+  },
+  'era-black-wall-street': {
+    file: 'Madam CJ Walker face circa 1914.jpg',
+    alt: 'Photographic portrait of Madam C. J. Walker, circa 1914',
+    credit: 'Scurlock Studio, c. 1914 — public domain',
+  },
+  'era-modern-innovators': {
+    file: 'Mae C. Jemison.jpg',
+    alt: 'NASA portrait of astronaut Dr. Mae Jemison',
+    credit: 'NASA — public domain',
+  },
 }
 
 export function photoUrl(id) {

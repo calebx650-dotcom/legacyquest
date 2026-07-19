@@ -8,8 +8,10 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useGame } from '../state/GameContext.jsx'
 import { audio } from '../audio/engine.js'
 import { questionsForEra } from '../data/questions.js'
+import { ERA_SIGNIFICANCE } from '../data/defendMeta.js'
 import { allEras } from '../content/store.js'
 import { Icon } from '../components/icons.jsx'
+import { Significance } from '../components/ui.jsx'
 import { kidText } from '../game/kids.js'
 
 const ROUND = 8
@@ -175,6 +177,7 @@ export default function Defend() {
                   <span className="muted"> · Best: {Math.max(best, score)} XP</span>
                 )}
               </p>
+              <Significance why={ERA_SIGNIFICANCE[eraId]} />
               <div className="onboarding-actions">
                 <button className="btn" onClick={retry}>
                   Beat your best
@@ -193,6 +196,7 @@ export default function Defend() {
               <p className="defend-final muted">
                 No progress lost. Read each question closely and try again.
               </p>
+              <Significance why={ERA_SIGNIFICANCE[eraId]} />
               <div className="onboarding-actions">
                 <button className="btn btn-primary" onClick={retry}>
                   Try again

@@ -9,6 +9,7 @@ import { ALL_QUESTS, dayKey, weekKey } from '../data/quests.js'
 import { DIFFICULTIES, DEFAULT_DIFFICULTY } from '../game/progression.js'
 import { xpMultiplierForDate } from '../data/events.js'
 import { allEras } from '../content/store.js'
+import { ERA_DEFEND_ARTIFACT } from '../data/defendMeta.js'
 
 const STORAGE_KEY = 'legacyquest.save.v2'
 
@@ -187,13 +188,20 @@ function reducer(state, action) {
     }
 
     case 'DEFEND_WIN': {
+      // Defending an era IS how the fiction says it gets restored, so a first
+      // win unlocks the era outright (the coin-based "Restore" button on the
+      // Eras screen remains as an alternate, faster path to the same result —
+      // both lead to the same unlockedEras entry, consolidated into one system).
       const first = !state.defendWins.includes(action.era)
       const best = Math.max(state.defendBest[action.era] || 0, action.score)
       const { xp, counters } = addXp(state, first ? action.score : Math.round(action.score / 4))
+      const artifact = first ? ERA_DEFEND_ARTIFACT[action.era] : null
       const next = {
         ...state,
         defendWins: addUnique(state.defendWins, action.era),
         defendBest: { ...state.defendBest, [action.era]: best },
+        unlockedEras: first ? addUnique(state.unlockedEras, action.era) : state.unlockedEras,
+        collectibles: artifact ? addUnique(state.collectibles, artifact) : state.collectibles,
         legacyPoints: state.legacyPoints + (first ? 15 : 0),
         xp,
         counters,

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useGame } from '../state/GameContext.jsx'
 import { PageHeader, Pill } from '../components/ui.jsx'
 import { audio } from '../audio/engine.js'
@@ -40,7 +41,7 @@ export default function Eras() {
       <PageHeader
         icon="🧭"
         title="Eras"
-        subtitle="Travel the timeline. Restore an era with coins to open its mysteries, figures, and stories."
+        subtitle="Travel the timeline. Restore an era instantly with coins, or defend it on the Quest Path — either way opens its mysteries, figures, and stories."
       />
 
       <div className="era-rail">
@@ -69,15 +70,25 @@ export default function Eras() {
               <p className="era-summary">{era.summary}</p>
 
               {!unlocked && (
-                <button
-                  className="btn btn-primary"
-                  disabled={!affordable}
-                  onClick={() => restore(era)}
-                >
-                  {affordable
-                    ? `Restore this era (−${era.unlockCost} coins)`
-                    : `Need ${era.unlockCost - state.legacyPoints} more coins`}
-                </button>
+                <div className="era-actions">
+                  <button
+                    className="btn btn-primary"
+                    disabled={!affordable}
+                    onClick={() => restore(era)}
+                  >
+                    {affordable
+                      ? `Restore this era (−${era.unlockCost} coins)`
+                      : `Need ${era.unlockCost - state.legacyPoints} more coins`}
+                  </button>
+                  <Link
+                    className="btn"
+                    to="/defend"
+                    state={{ era: era.id, eraName: era.name }}
+                    onClick={() => audio.play('click')}
+                  >
+                    Defend it instead
+                  </Link>
+                </div>
               )}
             </article>
           )

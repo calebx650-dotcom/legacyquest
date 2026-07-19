@@ -4623,3 +4623,21 @@ body {
   line-height: 1.6;
   color: var(--ink-soft);
 }
+
+/* ============================================================
+   CONSOLIDATION PASS — dual unlock path, defend significance.
+   ============================================================ */
+.era-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.era-actions .btn {
+  flex: 1;
+  min-width: 160px;
+  text-align: center;
+}
+.defend-result .significance {
+  text-align: left;
+  margin-top: 14px;
+}
