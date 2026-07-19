@@ -41,6 +41,12 @@ export const MYSTERIES = [
     answerId: 'a',
     explanation:
       'Rosa Parks’s arrest on December 1, 1955 was the immediate catalyst. Fifteen-year-old Claudette Colvin had been arrested months earlier and was a plaintiff in Browder v. Gayle, but organizers rallied the community around Parks. The boycott was sustained by Jo Ann Robinson’s leaflets, E. D. Nixon’s organizing, and the Montgomery Improvement Association led by Dr. Martin Luther King Jr.',
+    whyItMatters:
+      'The boycott proved that ordinary people, organized and persistent, could defeat segregation — 381 days of walking broke a system that courts alone had not. It became the blueprint for a decade of nonviolent protest, and its lesson holds today: change moves at the speed of ordinary people’s commitment.',
+    truth:
+      'For decades, popular retellings shrank this story to one tired seamstress. Claudette Colvin, Jo Ann Robinson, and forty thousand walkers were nearly erased from it. Restoring their names is what remembering fully means.',
+    reflect:
+      'The boycott needed thousands of people to hold together for 381 days. What do you think kept them walking after the first month?',
     unlocks: 'letter-mia',
   },
   {
@@ -80,6 +86,12 @@ export const MYSTERIES = [
     answerId: 'b',
     explanation:
       'A “station” was a safe house. “Conductors” like Harriet Tubman guided “passengers” between stations run by “stationmasters.” William Still, the “Father of the Underground Railroad,” documented hundreds of escapes in Philadelphia so separated families could reunite.',
+    whyItMatters:
+      'The Railroad showed that resistance to slavery was constant, organized, and interracial — and that enslaved people were the authors of their own freedom, not passive recipients of it. Its networks trained a generation of leaders who carried the fight into the Civil War and Reconstruction.',
+    truth:
+      'Secrecy was survival, so most of these stories were never written down. William Still hid his passenger records for years and published them in 1872 — without such acts of keeping, thousands of these journeys would be lost to us.',
+    reflect:
+      'Helping a freedom-seeker was a crime. Why do you think so many people risked everything to do it anyway?',
     unlocks: 'diagram-railroad',
   },
   {
@@ -114,6 +126,12 @@ export const MYSTERIES = [
     answerId: 'c',
     explanation:
       'Garrett Morgan patented the three-position traffic signal in 1923, adding a warning position between “stop” and “go.” He also invented an early gas mask. Latimer improved the lightbulb filament, Granville Woods held dozens of electrical patents, and Elijah McCoy invented an automatic lubricator — each a major inventor in his own right.',
+    whyItMatters:
+      'Morgan’s signal is one thread in a much larger fabric: Black inventors held thousands of patents by the early 1900s despite being shut out of universities, laboratories, and bank loans. Every safe intersection you cross today carries a piece of that overlooked work.',
+    truth:
+      'Inventors like Morgan often went uncredited for generations, and some were advised to hide their race to sell their work. Recovering these names is a recovery of fact, not a favor.',
+    reflect:
+      'Morgan sold his patent to General Electric rather than manufacturing it himself. What barriers might have made building his own company harder in the 1920s?',
     unlocks: 'patent-signal',
   },
 ]

@@ -67,6 +67,9 @@ export const ONBOARDING = {
       'Not quite — but keep looking. The gourd’s pointer stars always lead to the one star that never moves in the sky.',
   },
 
+  outroTruth:
+    'The Eraser is fiction. The erasing has been real — for generations, stories like these were kept out of textbooks and headlines. Keeping them alive is the whole quest.',
+
   outro: {
     art: '⭐',
     accent: '#f4b942',

@@ -12,6 +12,9 @@ export const STORIES = [
     rewardXp: 50,
     rewardPoints: 20,
     artifact: 'letter-mia',
+    whyItMatters:
+      'Montgomery turned one arrest into a mass movement and proved a community could out-organize a city government. The carpools, mass meetings, and discipline invented here became the toolkit of the entire Civil Rights Movement.',
+    reflect: 'Which choice in this story would have been hardest for you to make, and why?',
     start: 'open',
     nodes: {
       open: {
@@ -66,6 +69,9 @@ export const STORIES = [
     blurb: 'A night journey on the Underground Railroad. Every choice is a risk.',
     rewardXp: 50,
     rewardPoints: 20,
+    whyItMatters:
+      'Navigating by the North Star turned the night sky into a map anyone could learn but no one could confiscate. Thousands of self-liberations, guided by knowledge passed through songs and stories, forced the nation to confront slavery.',
+    reflect: 'What knowledge do you carry that could never be taken from you?',
     start: 'dusk',
     nodes: {
       dusk: {

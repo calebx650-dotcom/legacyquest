@@ -8,6 +8,8 @@ export const COMMUNITY = {
   place: 'Tulsa, Oklahoma',
   intro:
     'In the early 1900s, Greenwood was one of the most prosperous Black communities in America, with a self-sustaining economy of businesses, schools, and churches. In 1921, a white mob destroyed the district in the Tulsa Race Massacre. Rebuild it here — and recover its stories.',
+  truth:
+    'For most of a century, the Tulsa Race Massacre was left out of Oklahoma classrooms and newspapers; survivors kept the memory alive themselves. Rebuilding Greenwood here is a small act of the same keeping.',
   buildings: [
     {
       id: 'school',

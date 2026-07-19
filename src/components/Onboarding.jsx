@@ -148,11 +148,13 @@ export default function Onboarding() {
                 <div>
                   <div className="reward-card-name">{artifact.name}</div>
                   <div className="reward-card-meta">
-                    First artifact recovered · +{ONBOARDING.rewardPoints} Legacy Points · +
+                    First artifact recovered · +{ONBOARDING.rewardPoints} coins · +
                     {ONBOARDING.rewardXp} XP
                   </div>
                 </div>
               </div>
+
+              <p className="outro-truth">{ONBOARDING.outroTruth}</p>
 
               <div className="onboarding-actions">
                 <button className="btn btn-primary btn-lg" onClick={begin}>

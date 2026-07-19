@@ -1,5 +1,5 @@
 import { useGame } from '../state/GameContext.jsx'
-import { PageHeader, Pill } from '../components/ui.jsx'
+import { PageHeader, Pill, Significance } from '../components/ui.jsx'
 import { audio } from '../audio/engine.js'
 import { COMMUNITY } from '../data/community.js'
 import { Icon, GameIcon } from '../components/icons.jsx'
@@ -39,6 +39,8 @@ export default function Community() {
           <span className="muted">rebuilt</span>
         </div>
       </div>
+
+      <Significance truth={COMMUNITY.truth} />
 
       {hasWalker && (
         <p className="ability-active">

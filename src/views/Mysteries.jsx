@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useGame } from '../state/GameContext.jsx'
-import { PageHeader, Pill, Reward, EmptyNote } from '../components/ui.jsx'
+import { PageHeader, Pill, Reward, EmptyNote, Significance } from '../components/ui.jsx'
 import Speak from '../components/Speak.jsx'
 import { audio } from '../audio/engine.js'
 import { analytics } from '../game/analytics.js'
@@ -195,6 +195,7 @@ function MysteryModal({ mystery, onClose }) {
               </Reward>
             )}
             <p className="explanation">{mystery.explanation}</p>
+            <Significance why={mystery.whyItMatters} truth={mystery.truth} reflect={mystery.reflect} />
           </div>
         )}
       </div>

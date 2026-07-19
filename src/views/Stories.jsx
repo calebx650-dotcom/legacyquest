@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useGame } from '../state/GameContext.jsx'
-import { PageHeader, Pill, Reward } from '../components/ui.jsx'
+import { PageHeader, Pill, Reward, Significance } from '../components/ui.jsx'
 import { audio } from '../audio/engine.js'
 import { STORIES } from '../data/stories.js'
 import { allEras, allCollectibles } from '../content/store.js'
@@ -127,6 +127,7 @@ function StoryPlayer({ story, onClose }) {
             <Reward points={story.rewardPoints}>
               Story complete!{artifact ? ` Recovered “${artifact.name}”.` : ''} +{story.rewardXp} XP
             </Reward>
+            <Significance why={story.whyItMatters} reflect={story.reflect} />
             <div className="onboarding-actions">
               <button className="btn" onClick={() => { rewardedRef.current = false; setNodeId(story.start) }}>
                 Replay
