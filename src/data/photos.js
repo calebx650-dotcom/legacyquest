@@ -35,6 +35,11 @@ export const PHOTOS = {
     alt: 'Photographic portrait of Ida B. Wells, circa 1893',
     credit: 'Mary Garrity, c. 1893 — public domain',
   },
+  'rosa-parks': {
+    file: 'Rosa Parks.jpg',
+    alt: 'Photographic portrait of Rosa Parks',
+    credit: 'c. 1955 — public domain',
+  },
 
   // Era artwork — real period photographs shown on era cards. Any that fail to
   // load simply hide, leaving the standard card design.

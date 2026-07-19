@@ -1,6 +1,8 @@
-// Cinematic first-run onboarding. Plays a short comic sequence, hands the player
-// a guided first mission (introduced by Harriet Tubman), and unlocks the first
-// artifact — all in a couple of minutes. Shown until `state.onboarded` is true.
+// Cinematic first-run onboarding. Rosa Parks hosts: a short comic sequence
+// sets the stakes and names the player a Legacy Keeper, then she walks
+// through how the game actually works before handing off to Harriet Tubman
+// for a guided first mission that unlocks the first artifact. Shown until
+// `state.onboarded` is true.
 
 import { useState } from 'react'
 import { useGame } from '../state/GameContext.jsx'
@@ -9,8 +11,29 @@ import { ONBOARDING } from '../data/onboarding.js'
 import { COLLECTIBLES } from '../data/collectibles.js'
 import ComicPanel from './ComicPanel.jsx'
 import { Icon, GameIcon } from './icons.jsx'
+import { photoUrl, photoAlt } from '../data/photos.js'
 
-const STEP = { INTRO: 'intro', MISSION: 'mission', OUTRO: 'outro' }
+const STEP = { INTRO: 'intro', MECHANICS: 'mechanics', MISSION: 'mission', OUTRO: 'outro' }
+
+function OutroArt({ scene }) {
+  const [failed, setFailed] = useState(false)
+  const src = scene.photo && photoUrl(scene.photo)
+  if (src && !failed) {
+    return (
+      <img
+        className="comic-photo reward-pop"
+        src={src}
+        alt={photoAlt(scene.photo)}
+        onError={() => setFailed(true)}
+      />
+    )
+  }
+  return (
+    <span className="comic-emoji comic-glyph reward-pop">
+      <GameIcon glyph={scene.art} size={84} />
+    </span>
+  )
+}
 
 export default function Onboarding() {
   const { dispatch } = useGame()
@@ -20,6 +43,7 @@ export default function Onboarding() {
 
   const scenes = ONBOARDING.scenes
   const scene = scenes[sceneIdx]
+  const mechanics = ONBOARDING.mechanics
   const mission = ONBOARDING.mission
   const correct = picked === mission.answerId
   const artifact = COLLECTIBLES[ONBOARDING.rewardArtifact]
@@ -27,7 +51,7 @@ export default function Onboarding() {
   function nextScene() {
     audio.play('click')
     if (sceneIdx < scenes.length - 1) setSceneIdx((i) => i + 1)
-    else setStep(STEP.MISSION)
+    else setStep(STEP.MECHANICS)
   }
 
   function choose(id) {
@@ -71,11 +95,40 @@ export default function Onboarding() {
                   Skip intro
                 </button>
                 <button className="btn btn-primary" onClick={nextScene}>
-                  {sceneIdx < scenes.length - 1 ? 'Continue →' : 'Begin first mission →'}
+                  {sceneIdx < scenes.length - 1 ? 'Continue →' : 'How this works →'}
                 </button>
               </div>
             </div>
           </>
+        )}
+
+        {step === STEP.MECHANICS && (
+          <div className="comic-panel anim-fade mechanics-panel" style={{ '--accent': mechanics.accent }}>
+            <div className="comic-body">
+              <span className="comic-speaker">{mechanics.speaker}</span>
+              <h2 className="comic-title">{mechanics.title}</h2>
+              <p className="comic-text">{mechanics.intro}</p>
+              <div className="mechanics-grid">
+                {mechanics.items.map((item) => (
+                  <div key={item.name} className="mechanics-item">
+                    <span className="mechanics-icon">
+                      <Icon name={item.icon} size={22} />
+                    </span>
+                    <div>
+                      <div className="mechanics-name">{item.name}</div>
+                      <p className="mechanics-text">{item.text}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="comic-text mechanics-close">{mechanics.outro}</p>
+              <div className="onboarding-actions">
+                <button className="btn btn-primary" onClick={() => { audio.play('click'); setStep(STEP.MISSION) }}>
+                  Begin first mission →
+                </button>
+              </div>
+            </div>
+          </div>
         )}
 
         {step === STEP.MISSION && (
@@ -83,6 +136,7 @@ export default function Onboarding() {
             <div className="comic-body">
               <span className="comic-speaker">{mission.speaker}</span>
               <h2 className="comic-title">Your first mission</h2>
+              <p className="comic-text mission-transition">{mission.transition}</p>
               <p className="comic-text">{mission.setup}</p>
               <p className="case-question">{mission.question}</p>
               <div className="option-grid">
@@ -132,9 +186,7 @@ export default function Onboarding() {
         {step === STEP.OUTRO && (
           <div className="comic-panel anim-rise" style={{ '--accent': ONBOARDING.outro.accent }}>
             <div className="comic-art" aria-hidden>
-              <span className="comic-emoji comic-glyph reward-pop">
-                <GameIcon glyph={ONBOARDING.outro.art} size={84} />
-              </span>
+              <OutroArt scene={ONBOARDING.outro} />
             </div>
             <div className="comic-body">
               <span className="comic-speaker">{ONBOARDING.outro.speaker}</span>
