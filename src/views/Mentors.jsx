@@ -91,8 +91,8 @@ export default function Mentors() {
                   }}
                 >
                   {affordable
-                    ? `Recruit (−${m.unlockCost} pts)`
-                    : `Need ${m.unlockCost - state.legacyPoints} more pts`}
+                    ? `Recruit (−${m.unlockCost} coins)`
+                    : `Need ${m.unlockCost - state.legacyPoints} more coins`}
                 </button>
               )}
             </article>

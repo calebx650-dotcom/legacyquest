@@ -15,45 +15,11 @@ const NAV_GROUPS = [
   {
     label: 'Play',
     items: [
-      { to: '/', label: 'Keeper’s Hall', icon: '🏛️', end: true },
+      { to: '/', label: 'Quest Path', icon: '🧭', end: true },
       { to: '/daily', label: 'Daily Legacy', icon: '📅' },
-      { to: '/quests', label: 'Quests', icon: '🎯' },
-      { to: '/events', label: 'Events', icon: '🎁' },
-    ],
-  },
-  {
-    label: 'Explore',
-    items: [
-      { to: '/eras', label: 'Eras', icon: '🧭' },
-      { to: '/mysteries', label: 'History Mysteries', icon: '🕵️' },
-      { to: '/stories', label: 'Narrated Stories', icon: '📖' },
-      { to: '/puzzles', label: 'Puzzle Lab', icon: '🧩' },
-      { to: '/culture', label: 'Culture Journey', icon: '🎵' },
-    ],
-  },
-  {
-    label: 'Build',
-    items: [
-      { to: '/mentors', label: 'Mentors', icon: '⚔️' },
-      { to: '/community', label: 'Community Builder', icon: '🏙️' },
       { to: '/museum', label: 'Legacy Museum', icon: '🖼️' },
-    ],
-  },
-  {
-    label: 'Progress',
-    items: [
       { to: '/progress', label: 'Progression', icon: '🏅' },
-      { to: '/leaderboards', label: 'Leaderboards', icon: '🏆' },
-    ],
-  },
-  {
-    label: 'Classroom & tools',
-    items: [
-      { to: '/teacher', label: 'Teacher Mode', icon: '🎓' },
-      { to: '/analytics', label: 'Analytics', icon: '📊' },
-      { to: '/studio', label: 'Content Studio', icon: '🛠️' },
-      { to: '/offline', label: 'Offline & Packs', icon: '📥' },
-      { to: '/account', label: 'Account', icon: '👤' },
+      { to: '/more', label: 'More', icon: '🛠️' },
     ],
   },
 ]
@@ -140,12 +106,12 @@ export default function Layout({ children }) {
           </div>
 
           <div className="stat-chips">
-            <div className="chip chip-points" title="Legacy Points">
+            <div className="chip chip-points" title="Coins">
               <span className="chip-icon">
-                <Icon name="star" size={14} />
+                <Icon name="coin" size={14} />
               </span>
               <span className="chip-value">{state.legacyPoints}</span>
-              <span className="chip-label">Points</span>
+              <span className="chip-label">Coins</span>
             </div>
             <div className="chip" title="Daily streak">
               <span className="chip-icon">
@@ -209,11 +175,11 @@ export default function Layout({ children }) {
 
       <nav className="tabbar" aria-label="Primary">
         {[
-          { to: '/', icon: '🏛️', label: 'Home', end: true },
-          { to: '/daily', icon: '🎮', label: 'Play' },
-          { to: '/eras', icon: '🧭', label: 'Explore' },
-          { to: '/museum', icon: '🏙️', label: 'Build' },
+          { to: '/', icon: '🧭', label: 'Path', end: true },
+          { to: '/daily', icon: '📅', label: 'Daily' },
+          { to: '/museum', icon: '🖼️', label: 'Museum' },
           { to: '/progress', icon: '🏅', label: 'Progress' },
+          { to: '/more', icon: '🛠️', label: 'More' },
         ].map((t) => (
           <NavLink
             key={t.to}

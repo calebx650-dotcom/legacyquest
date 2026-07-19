@@ -77,8 +77,8 @@ export default function Community() {
                     }}
                   >
                     {affordable
-                      ? `Build (−${cost} pts)`
-                      : `Need ${cost - state.legacyPoints} more pts`}
+                      ? `Build (−${cost} coins)`
+                      : `Need ${cost - state.legacyPoints} more coins`}
                   </button>
                 </>
               )}

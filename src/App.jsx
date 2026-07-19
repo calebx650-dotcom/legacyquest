@@ -12,6 +12,9 @@ import Community from './views/Community.jsx'
 import Culture from './views/Culture.jsx'
 import Museum from './views/Museum.jsx'
 import DailyLegacy from './views/DailyLegacy.jsx'
+import Path from './views/Path.jsx'
+import Defend from './views/Defend.jsx'
+import More from './views/More.jsx'
 import Quests from './views/Quests.jsx'
 import Progress from './views/Progress.jsx'
 import Teacher from './views/Teacher.jsx'
@@ -40,7 +43,10 @@ export default function App() {
     <>
       <Layout>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/" element={<Path />} />
+          <Route path="/hall" element={<Dashboard />} />
+          <Route path="/defend" element={<Defend />} />
+          <Route path="/more" element={<More />} />
           <Route path="/daily" element={<DailyLegacy />} />
           <Route path="/quests" element={<Quests />} />
           <Route path="/events" element={<Events />} />
@@ -59,7 +65,7 @@ export default function App() {
           <Route path="/studio" element={<Studio />} />
           <Route path="/offline" element={<Offline />} />
           <Route path="/account" element={<Account />} />
-          <Route path="*" element={<Dashboard />} />
+          <Route path="*" element={<Path />} />
         </Routes>
       </Layout>
       <GameSystems />

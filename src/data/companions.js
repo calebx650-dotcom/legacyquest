@@ -20,7 +20,7 @@ export const COMPANION_TIPS = {
   ],
   'madam-cj-walker': [
     'I gave myself a start — rebuild Greenwood and watch a community rise.',
-    'Enterprise compounds. Spend Legacy Points where they build the most.',
+    'Enterprise compounds. Spend coins where they build the most.',
     'Invest in people. The Community Builder is where legacies take root.',
   ],
   'ida-b-wells': [

@@ -1,6 +1,6 @@
 // Community Builder — rebuild historically significant Black communities.
 // The prototype features Greenwood ("Black Wall Street") in Tulsa, Oklahoma.
-// Each building costs Legacy Points and unlocks a true story about the district.
+// Each building costs coins and unlocks a true story about the district.
 
 export const COMMUNITY = {
   id: 'greenwood',

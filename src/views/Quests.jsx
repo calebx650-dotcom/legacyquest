@@ -41,7 +41,7 @@ export default function Quests() {
       <PageHeader
         icon="🎯"
         title="Quests"
-        subtitle="Daily and weekly goals that reward XP and Legacy Points. Complete them just by playing — they claim automatically."
+        subtitle="Daily and weekly goals that reward XP and coins. Complete them just by playing — they claim automatically."
       />
 
       <h3 className="section-label">Daily quests · reset each day</h3>

@@ -164,13 +164,13 @@ export default function DailyLegacy() {
                 className="btn hint-btn"
                 onClick={useHint}
                 disabled={hintUsed || state.legacyPoints < HINT_COST}
-                title={`Removes two wrong answers (−${HINT_COST} pts)`}
+                title={`Removes two wrong answers (−${HINT_COST} coins)`}
               >
-                <Icon name="bulb" size={14} /> {hintUsed ? 'Hint used' : `Hint (−${HINT_COST} pts)`}
+                <Icon name="bulb" size={14} /> {hintUsed ? 'Hint used' : `Hint (−${HINT_COST} coins)`}
               </button>
               {missed && (
                 <p className="retry-note">
-                  Not quite — try another! (Correct now earns +{RETRY_POINTS} pts)
+                  Not quite — try another! (Correct now earns +{RETRY_POINTS} coins)
                 </p>
               )}
             </div>

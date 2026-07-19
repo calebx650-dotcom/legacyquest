@@ -235,7 +235,7 @@ export default function Dashboard() {
             <span className="mission-kind"><Icon name="search" size={13} /> History Mystery</span>
             <h4>{nextMystery.title}</h4>
             <p>{nextMystery.brief}</p>
-            <span className="mission-reward">Reward: +{nextMystery.reward} pts</span>
+            <span className="mission-reward">Reward: +{nextMystery.reward} coins</span>
           </Link>
         ) : (
           <div className="mission-card mission-done">
@@ -249,7 +249,7 @@ export default function Dashboard() {
             <span className="mission-kind"><Icon name="puzzle" size={13} /> Puzzle Lab</span>
             <h4>{nextPuzzle.title}</h4>
             <p>{nextPuzzle.instructions}</p>
-            <span className="mission-reward">Reward: +{nextPuzzle.reward} pts</span>
+            <span className="mission-reward">Reward: +{nextPuzzle.reward} coins</span>
           </Link>
         ) : (
           <div className="mission-card mission-done">

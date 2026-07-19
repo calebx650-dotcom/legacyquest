@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { useGame } from '../state/GameContext.jsx'
 import { PageHeader, Pill, Reward, EmptyNote } from '../components/ui.jsx'
 import Speak from '../components/Speak.jsx'
@@ -15,7 +16,13 @@ const eraName = (id) => ERAS.find((e) => e.id === id)?.name ?? id
 
 export default function Mysteries() {
   const { state } = useGame()
+  const location = useLocation()
   const [openId, setOpenId] = useState(null)
+
+  // Quest Path deep-link: open a specific case on arrival.
+  useEffect(() => {
+    if (location.state?.open) setOpenId(location.state.open)
+  }, [location.state])
 
   const available = MYSTERIES.filter((m) => state.unlockedEras.includes(m.era))
   const locked = MYSTERIES.filter((m) => !state.unlockedEras.includes(m.era))

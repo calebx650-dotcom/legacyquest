@@ -40,7 +40,7 @@ export default function Eras() {
       <PageHeader
         icon="🧭"
         title="Eras"
-        subtitle="Travel the timeline. Restore an era with Legacy Points to open its mysteries, figures, and stories."
+        subtitle="Travel the timeline. Restore an era with coins to open its mysteries, figures, and stories."
       />
 
       <div className="era-rail">
@@ -62,7 +62,7 @@ export default function Eras() {
                 {unlocked ? (
                   <Pill tone="good">Restored</Pill>
                 ) : (
-                  <Pill tone="lock"><Icon name="lock" size={12} /> {era.unlockCost} pts</Pill>
+                  <Pill tone="lock"><Icon name="lock" size={12} /> {era.unlockCost} coins</Pill>
                 )}
               </div>
               <p className="era-tagline">{era.tagline}</p>
@@ -75,8 +75,8 @@ export default function Eras() {
                   onClick={() => restore(era)}
                 >
                   {affordable
-                    ? `Restore this era (−${era.unlockCost} pts)`
-                    : `Need ${era.unlockCost - state.legacyPoints} more pts`}
+                    ? `Restore this era (−${era.unlockCost} coins)`
+                    : `Need ${era.unlockCost - state.legacyPoints} more coins`}
                 </button>
               )}
             </article>

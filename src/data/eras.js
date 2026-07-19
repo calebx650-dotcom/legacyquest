@@ -1,5 +1,5 @@
 // Historical eras the Legacy Keeper can travel to, in chronological order.
-// `unlockCost` is in Legacy Points. The first era is free; later eras unlock as
+// `unlockCost` is in coins. The first era is free; later eras unlock as
 // the player earns points, tracing the timeline from antiquity to Afrofuturism.
 //
 // All descriptions are grounded in verified history. Dates are inclusive ranges

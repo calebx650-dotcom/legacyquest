@@ -50,6 +50,7 @@ export default function GameSystems() {
   const [reveal, setReveal] = useState(null) // artifact being celebrated
   const [levelBurst, setLevelBurst] = useState(false)
   const levelRef = useRef(getLevel(state))
+  const goalRef = useRef(state.counters.day.goalBonus)
   const collectiblesRef = useRef(state.collectibles)
   const onboardedRef = useRef(state.onboarded)
   const firstRun = useRef(true)
@@ -108,6 +109,18 @@ export default function GameSystems() {
     levelRef.current = lvl
     firstRun.current = false
   }, [state, pushToast])
+
+  // --- Daily goal: celebrate crossing 3 activities in a day ---
+  useEffect(() => {
+    const hit = state.counters.day.goalBonus
+    if (hit && !goalRef.current && !firstRun.current) {
+      audio.play('levelup')
+      pushToast({ icon: '🎯', title: 'Daily goal complete', body: '3 activities today. +10 coins' })
+      setLevelBurst(true)
+      setTimeout(() => setLevelBurst(false), 2600)
+    }
+    goalRef.current = hit
+  }, [state.counters.day.goalBonus, pushToast])
 
   // --- Artifact reveal: a full-screen celebration when something new is
   // recovered. Skipped for the onboarding artifact (the outro already

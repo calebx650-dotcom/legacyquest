@@ -42,7 +42,7 @@ export const MENTORS = [
     lifespan: '1867–1919',
     era: 'great-migration',
     teaches: 'Entrepreneurship',
-    ability: 'Enterprise — community buildings cost 15% fewer Legacy Points.',
+    ability: 'Enterprise — community buildings cost 15% fewer coins.',
     unlockCost: 45,
     bio: 'Born Sarah Breedlove to formerly enslaved parents, she built a hair-care empire and became one of the first self-made woman millionaires in America, employing thousands of Black women as sales agents and funding scholarships and civil-rights causes.',
     quote: '“I got my start by giving myself a start.”',

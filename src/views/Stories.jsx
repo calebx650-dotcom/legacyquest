@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
+import { useLocation } from 'react-router-dom'
 import { useGame } from '../state/GameContext.jsx'
 import { PageHeader, Pill, Reward } from '../components/ui.jsx'
 import { audio } from '../audio/engine.js'
@@ -10,7 +11,13 @@ const eraName = (id) => allEras().find((e) => e.id === id)?.name ?? id
 
 export default function Stories() {
   const { state } = useGame()
+  const location = useLocation()
   const [playing, setPlaying] = useState(null)
+
+  // Quest Path deep-link: start a specific story on arrival.
+  useEffect(() => {
+    if (location.state?.play) setPlaying(location.state.play)
+  }, [location.state])
 
   return (
     <div className="view">

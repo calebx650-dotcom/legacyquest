@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { useGame } from '../state/GameContext.jsx'
 import { PageHeader, Pill, Reward } from '../components/ui.jsx'
 import { audio } from '../audio/engine.js'
@@ -18,7 +19,14 @@ function shuffle(arr) {
 
 export default function PuzzleLab() {
   const { state } = useGame()
+  const location = useLocation()
   const [activeId, setActiveId] = useState(PUZZLES[0].id)
+
+  // Quest Path deep-link: select a specific puzzle on arrival.
+  useEffect(() => {
+    if (location.state?.tab && PUZZLES.some((p) => p.id === location.state.tab))
+      setActiveId(location.state.tab)
+  }, [location.state])
   const active = PUZZLES.find((p) => p.id === activeId)
 
   return (
@@ -48,7 +56,7 @@ export default function PuzzleLab() {
             <h3>{active.title}</h3>
             <p className="muted">{active.instructions}</p>
           </div>
-          <Pill tone="accent">+{active.reward} pts</Pill>
+          <Pill tone="accent">+{active.reward} coins</Pill>
         </div>
         {active.type === 'match' && <MatchPuzzle puzzle={active} />}
         {active.type === 'timeline' && <TimelinePuzzle puzzle={active} />}

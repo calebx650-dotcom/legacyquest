@@ -23,7 +23,7 @@ export function Reward({ points, children }) {
         <Icon name="star" size={18} />
       </span>
       <span>
-        {children} <strong>+{points} Legacy Points</strong>
+        {children} <strong>+{points} coins</strong>
       </span>
     </div>
   )

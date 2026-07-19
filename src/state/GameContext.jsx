@@ -15,7 +15,7 @@ const STORAGE_KEY = 'legacyquest.save.v2'
 const emptyCounters = () => ({
   dayKey: dayKey(),
   weekKey: weekKey(),
-  day: { dailyDone: 0, puzzles: 0, clues: 0 },
+  day: { dailyDone: 0, puzzles: 0, clues: 0, activities: 0, goalBonus: false },
   week: { mysteries: 0, buildings: 0, xp: 0, puzzles: 0 },
   claimedDaily: [],
   claimedWeekly: [],
@@ -51,6 +51,9 @@ const initialState = {
   visitedCulture: [],
   completedStories: [],
   foundHidden: [],
+  defendWins: [],
+  defendBest: {},
+  pathChests: [],
   collectibles: [],
   daily: { lastCompleted: null, streak: 0 },
   thisDayClaimed: null,
@@ -89,6 +92,26 @@ function rollover(counters) {
     next = { ...next, weekKey: wk, week: emptyCounters().week, claimedWeekly: [] }
   }
   return next
+}
+
+// Count a completed activity toward the daily goal (3 per day). Crossing the
+// goal pays a one-time coin bonus for the day.
+const DAILY_GOAL = 3
+const GOAL_BONUS = 10
+function withActivity(next) {
+  const c = rollover(next.counters)
+  const activities = (c.day.activities || 0) + 1
+  let legacyPoints = next.legacyPoints
+  let goalBonus = c.day.goalBonus || false
+  if (activities >= DAILY_GOAL && !goalBonus) {
+    legacyPoints += GOAL_BONUS
+    goalBonus = true
+  }
+  return {
+    ...next,
+    legacyPoints,
+    counters: { ...c, day: { ...c.day, activities, goalBonus } },
+  }
 }
 
 // Add XP (scaled by difficulty AND any active event, e.g. double-XP weekends)
@@ -151,13 +174,40 @@ function reducer(state, action) {
       const story = STORIES.find((st) => st.id === action.id)
       if (!story || state.completedStories.includes(action.id)) return state
       const { xp, counters } = addXp(state, story.rewardXp)
-      return {
+      return withActivity({
         ...state,
         legacyPoints: state.legacyPoints + story.rewardPoints,
         completedStories: addUnique(state.completedStories, action.id),
         collectibles: story.artifact
           ? addUnique(state.collectibles, story.artifact)
           : state.collectibles,
+        xp,
+        counters,
+      })
+    }
+
+    case 'DEFEND_WIN': {
+      const first = !state.defendWins.includes(action.era)
+      const best = Math.max(state.defendBest[action.era] || 0, action.score)
+      const { xp, counters } = addXp(state, first ? action.score : Math.round(action.score / 4))
+      const next = {
+        ...state,
+        defendWins: addUnique(state.defendWins, action.era),
+        defendBest: { ...state.defendBest, [action.era]: best },
+        legacyPoints: state.legacyPoints + (first ? 15 : 0),
+        xp,
+        counters,
+      }
+      return first ? withActivity(next) : next
+    }
+
+    case 'OPEN_CHEST': {
+      if (state.pathChests.includes(action.id)) return state
+      const { xp, counters } = addXp(state, 20)
+      return {
+        ...state,
+        pathChests: addUnique(state.pathChests, action.id),
+        legacyPoints: state.legacyPoints + 30,
         xp,
         counters,
       }
@@ -260,7 +310,7 @@ function reducer(state, action) {
       const mystery = MYSTERIES.find((m) => m.id === action.id)
       if (!mystery) return state
       const { xp, counters } = addXp(state, mystery.reward)
-      return {
+      return withActivity({
         ...state,
         legacyPoints: state.legacyPoints + mystery.reward,
         solvedMysteries: addUnique(state.solvedMysteries, action.id),
@@ -269,7 +319,7 @@ function reducer(state, action) {
           : state.collectibles,
         xp,
         counters: { ...counters, week: { ...counters.week, mysteries: counters.week.mysteries + 1 } },
-      }
+      })
     }
 
     case 'SOLVE_PUZZLE': {
@@ -277,7 +327,7 @@ function reducer(state, action) {
       const puzzle = PUZZLES.find((p) => p.id === action.id)
       if (!puzzle) return state
       const { xp, counters } = addXp(state, puzzle.reward)
-      return {
+      return withActivity({
         ...state,
         legacyPoints: state.legacyPoints + puzzle.reward,
         solvedPuzzles: addUnique(state.solvedPuzzles, action.id),
@@ -287,7 +337,7 @@ function reducer(state, action) {
           day: { ...counters.day, puzzles: counters.day.puzzles + 1 },
           week: { ...counters.week, puzzles: counters.week.puzzles + 1 },
         },
-      }
+      })
     }
 
     case 'BUILD': {
@@ -318,14 +368,14 @@ function reducer(state, action) {
       const reward = STREAK_REWARDS[streak]
       if (reward) collectibles = addUnique(collectibles, reward)
       const { xp, counters } = addXp(state, action.points)
-      return {
+      return withActivity({
         ...state,
         legacyPoints: state.legacyPoints + action.points,
         collectibles,
         daily: { lastCompleted: action.date, streak },
         xp,
         counters: { ...counters, day: { ...counters.day, dailyDone: 1 } },
-      }
+      })
     }
 
     case 'RESET':
